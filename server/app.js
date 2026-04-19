@@ -14,6 +14,7 @@ const createJobTable = require('./database/job.js')
 const createReviewTable = require('./database/review.js')
 const profileRoute = require('./routes/profileRoute.js')
 const serviceRoute = require('./routes/serviceRoute.js')
+const jobRequest = require('./routes/requestJobRoute.js')
 
 
 const app = express();
@@ -30,7 +31,7 @@ app.use(express.json());
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
-  process.env.ALLOW_URL
+   process.env.ALLOW_URL
 ];
 
 app.use(cors({
@@ -65,7 +66,9 @@ app.use('/api', login);
 app.use('/api', updateRoutes);
 app.use('/api', profileRoute)
 app.use('/api', serviceRoute)
+app.use('/api', jobRequest)
 
 server.listen(PORT, ()=>{
   console.log(`App listining in PORT ${PORT}`)
 })
+

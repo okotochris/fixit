@@ -2,7 +2,6 @@ const express = require('express');
 const db = require('../database/db.js');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const { storage } = require('../service/cloudinary');
 const sendEmail = require('../service/brevo');
 const cloudinary = require('../service/cloudinary');
 const generateSlug = require('../helper/generateSlug');
@@ -82,7 +81,7 @@ router.post('/signup', upload.single('profilePhoto'), async (req, res)=>{
 
       </div>
     </div> `;
-    //sendEmail(email, text);
+    sendEmail(email, text);
     try {
        await db.query(`INSERT INTO pending_users (email, code, userinfo) VALUES ($1,$2,$3)`, [email, code, req.body]);
         res.status(200).json({message: 'Verification code sent to email'});
@@ -111,7 +110,7 @@ router.post('/verify-email', async (req, res) => {
 
     // 2️⃣ Extract user info
     const { userinfo } = pendingResult.rows[0];
-    let { fullName, email, phone, terms, skills, profilePhoto, password,location, role } = userinfo;
+    let { fullName, email, phone, terms, skills, profilePhoto, password, location, role, latitude, longitude } = userinfo;
 
     // 3️⃣ Upload profile photo if exists
     if (profilePhoto) {
@@ -122,9 +121,9 @@ router.post('/verify-email', async (req, res) => {
 
     // 4️⃣ Insert into main users table
     const userResult = await db.query(
-      `INSERT INTO users (fullName, email, phone, terms, skills, profilephoto, password, profilePhotoPublicId, location, role)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
-      [fullName, email, phone, terms, skills, profilePhoto, password, profilePublicId, location, role]
+      `INSERT INTO users (fullName, email, phone, terms, skills, profilephoto, password, profilePhotoPublicId, location, role, latitude, longitude)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *`,
+      [fullName, email, phone, terms, skills, profilePhoto, password, profilePublicId, location, role, latitude, longitude]
     );
 
     // 5️⃣ Generate slug and update user record
