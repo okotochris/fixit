@@ -191,11 +191,12 @@ router.post('/upload-workphoto', upload.single('photo'), async (req, res) => {
 );
 
 //DELETE IMAGE 
-router.post('/delete_image', async(req, res)=>{
+router.delete('/delete_image', async(req, res)=>{
   const id = req.query.id
-  const image = req.query.service
+  const service = req.query.service
+
   try {
-    const result = await db.query('UPDATE users SET images = array_remove(image, $1) WHERE id= $2 RETURNING *')
+    const result = await db.query('UPDATE users SET image = array_remove(image, $1) WHERE id= $2 RETURNING *', [service, id])
     if(!result.rows.length > 0){
       return res.status(404).json({message:"file not found"})
     }

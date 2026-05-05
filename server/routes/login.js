@@ -136,7 +136,7 @@ router.post('/verify-email', async (req, res) => {
     await db.query(`DELETE FROM pending_users WHERE email = $1`, [userEmail]);
 
     // 6️⃣ Generate JWT
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ email }, process.env.JWT_SECRET);
     const userDetails = { password, ...userInfo, slug };
     res.status(200).json({ token, userDetails });
 

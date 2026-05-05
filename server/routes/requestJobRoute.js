@@ -11,6 +11,7 @@ router.post(
   isAuthenticated,
   upload.array('job_photos'), // handle multiple images
   async (req, res) => {
+    console.log('visited')
     try {
       // Destructure text fields
       const {
@@ -25,7 +26,6 @@ router.post(
         latitude,
         longitude
       } = req.body;
-      console.log(req.body)
       // Fetch client and worker full names
       const clientResult = await db.query('SELECT fullname FROM users WHERE id=$1', [client_id]);
       if (!clientResult.rows[0]) return res.status(404).json({ message: "Client not found" });
@@ -36,7 +36,6 @@ router.post(
       const workerFullName = workerResult.rows[0].fullname;
 
       // Upload images to Cloudinary
-      console.log(req.files)
       let uploadedImages = [];
       if (req.files && req.files.length > 0) {
         for (const file of req.files) {
@@ -103,7 +102,7 @@ router.post(
 //GET JOB BASE ON SLUG
 router.get('/job_request', async(req, res)=>{
     const slug = req.query.slug;
-  console.log(slug)
+    console.log('fetching job with slug:', slug)
     try {
       const result = await db.query(`
         SELECT 
@@ -118,10 +117,9 @@ router.get('/job_request', async(req, res)=>{
             `, [slug]);
         if(result.rows.length <1){
             res.status(404).json({message:"file not found"}) 
-            console.log(result.rows)
+
             return       
         }
-        console.log("result", result.rows)
         res.status(200).json(result.rows[0])
 
     } catch (error) {
@@ -179,4 +177,67 @@ router.post("/reviews", async (req, res) => {
   }
 });
 
+//JOBS VAIBLABLE API 
+router.get('/available_jobs', async (req, res)=>{
+  try {
+    const jobs = await db.query('SELECT * FROM jobs WHERE status=$1 ORDER BY id DESC', ['pending'])
+    if(jobs.length < 1){
+      res.status(404).json({message:"NO jobs"})
+      return
+    }
+    res.status(200).json(jobs.rows)
+  } catch (error) {
+    res.status(500).json({message:"Server Error"})
+  }
+})
+
+// ACCEPT JOB
+router.patch('/accept_job', async (req, res) => {
+  const id = req.query.id;
+  const worker_id = req.query.worker_id
+
+  try {
+    const result = await db.query(
+      'UPDATE jobs SET status = $1, worker_id = $2 WHERE id = $3 RETURNING *',
+      ['accepted', worker_id, id]
+    );
+
+    if (result.rowCount < 1) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    return res.status(200).json({
+      message: "Job status updated",
+      job: result.rows[0],
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+});
+
+// REJECT JOB
+router.patch('/reject_job', async (req, res) => {
+  const id = req.query.id;
+  const worker_id = req.query.worker_id
+
+  try {
+    const result = await db.query(
+      'UPDATE jobs SET status = $1, worker_id = null WHERE id = $3 AND worker_id = $2 RETURNING *',
+      ['pending', worker_id, id]
+    );
+
+    if (result.rowCount < 1) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    return res.status(200).json({
+      message: "Job status updated",
+      job: result.rows[0],
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+});
 module.exports = router;
