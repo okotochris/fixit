@@ -4,15 +4,16 @@ import { useEffect } from "react";
 import getLocation from "../getUserLocation";
 import { getDistance } from "./getDistance";
 
-
-export default function useLocationSync(updateDBLocation: (loc: { lat: number; lng: number }) => Promise<any>) {
+export default function useLocationSync(
+  updateDBLocation: (loc: { lat: number; lng: number }) => Promise<any>
+) {
   useEffect(() => {
     let isRunning = true;
 
     async function sync() {
       try {
         const newLoc = await getLocation();
-        if (!isRunning) return;
+        if (!isRunning || !newLoc) return; // ✅ FIX 1 (critical)
 
         const oldLoc = localStorage.getItem("location");
 
