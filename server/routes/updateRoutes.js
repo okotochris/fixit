@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require('../database/db');
 const upload = require('../middleware/multer')
 const cloudinary = require('../service/cloudinary')
+const generateSlug = require('../helper/generateSlug');
 
 router.post('/update-about', async (req, res)=>{
     const {userId, about} = req.body;
@@ -240,5 +241,74 @@ router.delete('/delete_service', async(req, res)=>{
     res.status(500).json({message:"internal server error"})
   }
 })
+
+//UPDATE USER LOCATION 
+router.patch('/update-location', async (req, res)=>{
+  const {id, latitude, longitude} = req.body;
+  try {
+    await db.query(`UPDATE users SET latitude = $1, longitude = $2 WHERE id = $3`, [latitude, longitude, id]);
+    res.status(200).json({message: 'Location updated successfully'});
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({message: 'Internal server error'});
+  }
+})
+router.patch("/user/phone", async (req, res) => {
+  const { id, phoneNumber } = req.body;
+
+  if (!id || !phoneNumber) {
+    return res.status(400).json({ message: "Missing fields" });
+  }
+
+  await db.query(
+    "UPDATE users SET phone_number = $1 WHERE id = $2",
+    [phoneNumber, id]
+  );
+
+  res.json({ message: "Phone updated successfully" });
+});
+
+//update account to worker
+router.patch('/upgrade-to-professional', async (req, res) => {
+  const { id, skill, location, phone } = req.body;
+
+  console.log(id, skill, location, phone);
+
+  try {
+    const userResult = await db.query(
+      `UPDATE users 
+       SET role = 'worker',
+           skills = $1,
+           location = $2,
+           phone = $3
+       WHERE id = $4
+       RETURNING *`,
+      [skill, location, phone, id]
+    );
+
+    // Generate slug
+    const userInfo = userResult.rows[0];
+
+    const slug = generateSlug(userInfo.fullname, userInfo.id);
+
+    await db.query(
+      `UPDATE users SET slug = $1 WHERE email = $2`,
+      [slug, userInfo.email]
+    );
+
+    res.status(200).json({
+      message: 'Account updated successfully',
+      slug,
+    });
+
+  } catch (error) {
+    console.log(error.message);
+
+    res.status(500).json({
+      message: 'Internal server error',
+    });
+  }
+});
+
 
 module.exports = router;

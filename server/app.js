@@ -23,7 +23,7 @@ const server = createServer(app);
 //SETTING MIDDLEWARE
 const io = new Server(server, {
   cors:{
-    origin:"http://localhost:3001",
+    origin:"http://localhost:3000",
     methods:['GET', 'POST']
   }
 });
@@ -58,7 +58,7 @@ db.connect().then(result=>{
 .catch(error=>{
   console.log("Database connection failed", error.message)
 })
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 socketSetup(io);
 
 
@@ -68,7 +68,8 @@ app.use('/api', profileRoute)
 app.use('/api', serviceRoute)
 app.use('/api', jobRequest)
 
-server.listen(PORT, ()=>{
+server.listen(PORT, async ()=>{
   console.log(`App listining in PORT ${PORT}`)
+  await db.query('ALTER TABLE users ALTER COLUMN terms DROP NOT NULL;')
 })
 

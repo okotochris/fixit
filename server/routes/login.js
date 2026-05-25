@@ -145,6 +145,7 @@ router.post('/verify-email', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 router.get('/check_email', async (req, res)=>{
   const {email} = req.query;
   const result = await db.query('SELECT email FROM users WHERE email=$1',[email])
@@ -156,5 +157,36 @@ router.get('/check_email', async (req, res)=>{
     console.log(result.rows)
   return res.status(404).json(false)
 })
+
+//LOGING USING EXTERNAL PROVIDER GOOGLE /APPLE
+router.post('/external-login', async (req, res)=>{
+  const {email, fullName, profilePhoto, latitude, longitude} = req.body;
+  try {
+    // 1. Check if user exists
+    let result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+    let user;
+
+    if (result.rows.length === 0) {
+      // 2. If user doesn't exist, create a new one
+      const newUserResult = await db.query(
+        `INSERT INTO users (fullName, email, profilePhoto, role, latitude, longitude) VALUES ($1, $2, $3, 'client', $4, $5) RETURNING *`,
+        [fullName, email, profilePhoto, latitude, longitude]
+      );
+      user = newUserResult.rows[0];
+    } else {
+   
+      user = result.rows[0];
+    }
+
+    // 4. Generate JWT
+    const token = jwt.sign({ email }, process.env.JWT_SECRET);
+    const userDetails = { password: undefined, ...user };
+    res.status(200).json({ token, userDetails });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 module.exports = router;

@@ -4,12 +4,12 @@ function createUsersDatabase(){
     try {
         db.query(`CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
-            fullName VARCHAR(255) NOT NULL,
+            fullName VARCHAR(255) ,
             email VARCHAR(255) UNIQUE NOT NULL,
-            phone VARCHAR(20) NOT NULL,
-            location VARCHAR(255) NOT NULL,
+            phone VARCHAR(20),
+            location VARCHAR(255) ,
             address TEXT,
-            terms BOOLEAN NOT NULL,
+            terms BOOLEAN DEFAULT TRUE,
             skills TEXT,
             services TEXT[],
             hourlyRate TEXT,
@@ -25,7 +25,7 @@ function createUsersDatabase(){
             latitude FLOAT,
             longitude  FLOAT,
             isVerified BOOLEAN DEFAULT FALSE,
-            password VARCHAR(255) NOT NULL,
+            password VARCHAR(255),
             role VARCHAR(50) DEFAULT 'client',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )`)

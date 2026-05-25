@@ -240,4 +240,34 @@ router.patch('/reject_job', async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 });
+
+router.get('/job_info', async(req, res)=>{
+  const slug = req.query.slug;
+  const client_id = req.query.client_id;
+
+  try {
+   const result = await db.query(
+  `SELECT 
+      jobs.job_title,
+      jobs.description,
+      users.fullname AS worker_fullname,
+      users.profilephoto AS worker_profilephoto,
+      users.slug AS worker_slug
+      FROM jobs
+      JOIN users 
+        ON jobs.worker_id = users.id
+      WHERE jobs.slug = $1 AND jobs.client_id = $2`,
+      [slug, client_id]
+    );
+
+    if (result.rows.length < 1) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+    console.log('job info fetched:', result.rows[0])
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 module.exports = router;
