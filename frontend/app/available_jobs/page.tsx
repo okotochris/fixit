@@ -21,6 +21,7 @@ interface Job {
   status: string;
   created_at: string;
   latitude:number,
+  skills:string
   longitude:number
 }
 
@@ -58,7 +59,8 @@ function AvailableJobs() {
 
   // Search filter
   useEffect(() => {
-    if (!searchTerm.trim()) {
+   async function filterJob(){
+     if (!searchTerm.trim()) {
       setFilteredJobs(jobs);
       return;
     }
@@ -72,6 +74,8 @@ function AvailableJobs() {
     );
 
     setFilteredJobs(filtered);
+   }
+   filterJob()
   }, [searchTerm, jobs]);
 
   if (loading) {
