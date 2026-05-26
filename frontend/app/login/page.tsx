@@ -32,7 +32,7 @@ export default function LoginPage() {
 
       const  {lat:latitude, lng:longitude} = loc;
       try{
-        const userData =  await fetch(`${serverUrl}/api/external-login`, {
+        const userData =  await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/external-login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, fullName, profilePhoto, latitude, longitude }),

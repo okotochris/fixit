@@ -198,6 +198,8 @@ export default function WorkerSignupForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [message, setMessage] = useState('')
+  const [isOpen, setIsOpen] = useState(false)
 
   const router = useRouter();
   const skillsList = [
@@ -265,7 +267,9 @@ export default function WorkerSignupForm() {
       const isUsed = await emailCheck.json();
 
       if (isUsed) {
-        setErrors({ email: 'Email has already been used' });
+        setMessage('Email has already been used' );
+        setIsOpen(true)
+        setIsLoading(false)
         return;
       }
 
