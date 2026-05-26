@@ -25,6 +25,7 @@ app.use(express.json());
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
+  'https://resilient-cooperation-production.up.railway.app',
    process.env.ALLOW_URL
 ];
 
