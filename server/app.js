@@ -20,13 +20,7 @@ const jobRequest = require('./routes/requestJobRoute.js')
 const app = express();
 const server = createServer(app);
 
-//SETTING MIDDLEWARE
-const io = new Server(server, {
-  cors:{
-    origin:"http://localhost:3000",
-    methods:['GET', 'POST']
-  }
-});
+
 app.use(express.json());
 const allowedOrigins = [
   'http://localhost:3000',
@@ -45,7 +39,13 @@ app.use(cors({
   credentials: true
 }));
 
-
+//SETTING MIDDLEWARE
+const io = new Server(server, {
+  cors:{
+    origin:"http://localhost:3000",
+    methods:['GET', 'POST']
+  }
+});
 //CONNECTION TO DATABASE
 db.connect().then(result=>{
   console.log("Database connected successfully")
