@@ -19,6 +19,7 @@ type Professional = {
   latitude: number;
   longitude: number;
   services:string[]
+   profession:string
 
 };
 

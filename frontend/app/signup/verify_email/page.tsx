@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Mail, ArrowRight, RefreshCw } from 'lucide-react'
 import FancyLoader from '@/app/component/loading'
@@ -16,6 +16,20 @@ function Verify() {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [message, setMessage] = useState("")
+  const [email, setEmail] = useState('')
+
+
+  useEffect(()=>{
+   async function getEmail(){
+     const savedEmail = localStorage.getItem('email')
+    if(!savedEmail){
+      router.push('/singup')
+      return
+    }
+    setEmail(savedEmail)
+   }
+   getEmail()
+  }, [])
 
   const handleChange = (index: number, value: string) => {
     if (value.length > 1) return
@@ -121,7 +135,7 @@ function Verify() {
             <p className="text-gray-600 dark:text-zinc-400 text-[15px]">
               We sent a 5-digit verification code to<br />
               <span className="font-medium text-orange-600 dark:text-orange-400">
-                {localStorage.getItem('email')}
+                {email}
               </span>
             </p>
           </div>

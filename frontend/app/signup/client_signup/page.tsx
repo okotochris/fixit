@@ -3,7 +3,6 @@ import { AlertCircle, ChevronRight, Eye, EyeOff, Mail, Lock, MapPin, Phone, User
 import Link from "next/link"
 import { useState } from "react"
 import { useRouter } from 'next/navigation'
-import { get } from "http"
 import getLocation from "@/app/component/getUserLocation"
 import FancyLoader from "@/app/component/loading"
 
@@ -22,6 +21,11 @@ interface ClientFormData {
 interface FormErrors {
   [key: string]: string
 }
+type PasswordStrengthProps = {
+  password: string;
+};
+
+
 
 // ============ FORM INPUT COMPONENT (Dark Mode) ============
 const FormInput: React.FC<{
@@ -149,7 +153,12 @@ export default function ClientSignupForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const {lat:latitude, lng:longitude} = await getLocation()
+    const loc = await  await getLocation()
+    if(!loc){
+      console.log("Something went wrong")
+      return;
+    }
+    const {lat:latitude, lng:longitude} = loc
     if (!validateForm()) return
 
     setIsLoading(true)
@@ -175,17 +184,21 @@ export default function ClientSignupForm() {
   }
 
   // Password Strength Indicator (Dark Mode)
-  const PasswordStrengthIndicator: React.FC<{ password: string }> = ({ password }) => {
-    const getStrength = () => {
-      let strength = 0
-      if (password.length >= 8) strength++
-      if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++
-      if (/[0-9]/.test(password)) strength++
-      if (/[^a-zA-Z0-9]/.test(password)) strength++
-      return strength
-    }
+ const PasswordStrengthIndicator: React.FC<PasswordStrengthProps> = ({ password }) => {
+  const getStrength = () => {
+    let strength = 0;
 
-    const strength = getStrength()
+    if (password.length > 5) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+    return strength;
+  };
+
+
+    const strength = getStrength();
+
     const strengthLabels = ['Weak', 'Fair', 'Good', 'Strong', 'Very Strong']
     const strengthColors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-emerald-500', 'bg-emerald-600']
 

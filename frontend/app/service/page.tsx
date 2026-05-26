@@ -29,9 +29,7 @@ type Services  = {
 
 async function getWorkers(): Promise<Services[]> {
   try {
-    const response = await fetch(`${serverUrl}/api/get-workers`, {
-      cache: "no-store",
-    });
+    const response = await fetch(`${serverUrl}/api/get-workers`, { next: { revalidate: 60 } });
 
     if (!response.ok) {
       console.log("Failed to fetch workers:", response.status);

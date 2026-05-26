@@ -24,7 +24,13 @@ export default function LoginPage() {
       const email = session.user?.email;
       const fullName = session.user?.name;
       const profilePhoto = session.user?.image;
-      const  {lat:latitude, lng:longitude} = await getLocation();
+      const loc = await getLocation()
+      if(!loc){
+        console.log("Something went wrong")
+        return
+      }
+
+      const  {lat:latitude, lng:longitude} = loc;
       try{
         const userData =  await fetch(`${serverUrl}/api/external-login`, {
           method: "POST",

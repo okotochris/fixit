@@ -182,7 +182,12 @@ export default function WorkerSignupForm() {
 
   useEffect(()=>{
     async function setLocation(){
-      const { lat, lng } = await getLocation();
+      const loc =await getLocation();
+      if(!loc){
+        console.log("Something went wrong")
+        return
+      }
+      const { lat, lng } = loc
       setFormData({...formData, latitude:lat, longitude:lng})
     }
     setLocation()

@@ -5,7 +5,6 @@ import Footer from "../component/footer";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
-import Image from "next/image";
 import getLocation from "../component/getUserLocation";
 import FancyLoader from "../component/loading";
 
@@ -144,7 +143,12 @@ async function handleRequest(e: React.FormEvent) {
     formData.append("scheduled_date",  reqData.scheduled_date || isSelected);
     formData.append("address", reqData.address);
     formData.append("time", reqData.time);
-    const { lat, lng } = await getLocation();
+    const loc = await getLocation();
+    if(!loc){
+      console.log("Somthing went wrong")
+      return
+    }
+    const { lat, lng } = loc
 
     formData.append("latitude", lat.toString());
     formData.append("longitude", lng.toString());

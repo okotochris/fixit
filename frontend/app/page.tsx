@@ -1,10 +1,10 @@
-
+export const dynamic = "force-dynamic";
 import Head from './component/head'
 import { Metadata } from 'next'
 import { Search } from 'lucide-react'
 import Footer from './component/footer'
 import Jobs from './component/jobs'
-const serverUrl = process.env.NEXT_PUBLIC_API_URL;
+const serverUrl = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 
 export const metadata: Metadata = {
@@ -26,6 +26,7 @@ type Worker={
   latitude: number;
   longitude: number;
   services:string[]
+  skills:string
 }
 async function getWorkers(): Promise<Worker[]> {
   let page = 1;

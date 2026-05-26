@@ -43,10 +43,7 @@ type Job = {
 
 export default function Profile() {
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(() => {
-  const localUserData = localStorage.getItem('user');
-    return localUserData ? JSON.parse(localUserData) : null;
-  });
+  const [user, setUser] = useState<User | null>()
   const [isEditingAbout, setIsEditingAbout] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [about, setAbout] = useState('');
@@ -65,13 +62,13 @@ export default function Profile() {
   useEffect(() => {
     async function getUser(){
     const localUserData = localStorage.getItem('user');
-    if (localUserData) {
-      const data = JSON.parse(localUserData);
+    if (!localUserData) {
+       router.push('/login');
+       return
+    } 
+    const data = JSON.parse(localUserData);
       setUser(data);
       setAbout(data.description || '');
-    } else {
-      router.push('/login');
-    }
     }
     getUser()
   }, []);

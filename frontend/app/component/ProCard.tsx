@@ -16,6 +16,7 @@ type Professional = {
   longitude: number;
   coverphoto: string;
   description: string;
+  profession:string
 };
 function ProCard({ pro, requestService }: { pro: Professional; requestService: (pro: Professional) => void }) {
   const [distance, setDistance] = useState<number | null>(null);
