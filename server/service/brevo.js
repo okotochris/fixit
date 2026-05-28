@@ -1,30 +1,23 @@
-const SibApiV3Sdk = require('sib-api-v3-sdk');
-let defaultClient = SibApiV3Sdk.ApiClient.instance;
-require("dotenv").config();
-// Configure API key
-let apiKey = defaultClient.authentications['api-key'];
-apiKey.apiKey = process.env.BREVO_API_KEY; // store this in Railway variables
+const { Resend } = require('resend');
 
-let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-let sender = 'info@studynest.com.ng';
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-async function sendEmail(userEmail, msg) {
-  let sendSmtpEmail = {
-    sender: { email: sender, name: "Fixit.com" },
-    to: [{ email: userEmail, name: "User" }],
-    subject: "Fixit Verification Code",
-    htmlContent: msg,
-  };
+const sendEmail = async (email, html) => {
+    try {
+        const response = await resend.emails.send({
+            from: 'Fixit <info@login.edosubebvoucher.org>',
+            to: email,
+            subject: 'Notification',
+            html: html,
+        });
 
-  apiInstance.sendTransacEmail(sendSmtpEmail).then(
-    function (data) {
-      console.log("Email sent ✅:", data);
-      return true
-    },
-    function (error) {
-      console.error("Error sending email ❌:", error);
+        console.log("Email sent:", response);
+        return response;
+
+    } catch (error) {
+        console.log("Resend error:", error);
+        throw error;
     }
-  );
-}
+};
 
 module.exports = sendEmail;
