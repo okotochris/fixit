@@ -60,14 +60,15 @@ async function getWorkers(): Promise<Worker[]> {
 }
 export default async function Home() {
   const proffesion = [
-    { item: "Plumbing", icon: "/plumbing.png" },
-    { item: "Electrical", icon: "/electrical.png" },
-    { item: "Carpentry", icon: "/carpentry.png" },
-    { item: "Painting", icon: "/painting.png" },
-    { item: "HVAC", icon: "/hvac.png" },
+    { item: "Plumber", icon: "/plumbing.png" },
+    { item: "Electrician", icon: "/electrical.png" },
+    { item: "Carpenter", icon: "/carpentry.png" },
+    {item:'Funiture', icon: "/carpentry.png" },
+    { item: "Painter", icon: "/painting.png" },
+    { item: "HVAC Technician", icon: "/hvac.png" },
     { item: "Cleaner", icon: "/cleaning.png" },
     { item: "Gardener", icon: "/gardening.png" },
-    { item: "Welding", icon: "/welding.png" },
+    { item: "Welder", icon: "/welding.png" },
     { item: "Baber", icon: "/babing.png" }
   ]
 
@@ -139,8 +140,10 @@ export default async function Home() {
                 key={i}
                 className="bg-white dark:bg-gray-800 p-2 md:p-5 rounded-xl shadow hover:shadow-lg transition  text-center border border-gray-200 dark:border-gray-700"
               >
+              <Link href={`/services/${item.item}`}>
                 <img src={item.icon} alt={item.item} className="mx-auto mb-4" width={64} height={64} />
                 <h3 className="text-sm md:text-lg font-semibold dark:text-white">{item.item}</h3>
+              </Link>
               </div>
             ))}
           </div>

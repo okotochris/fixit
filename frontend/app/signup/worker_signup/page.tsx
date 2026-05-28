@@ -203,7 +203,7 @@ export default function WorkerSignupForm() {
 
   const router = useRouter();
   const skillsList = [
-    'Plumber', 'Electrician', 'Carpenter', 'Painter', 'Bricklayer',
+    'Plumber', 'Electrician', 'Funiture', 'Carpenter', 'Painter', "HVAC", 'Bricklayer',
     'Roofer', 'HVAC Technician', 'Cleaner', 'Handyman', 'Welder', 'Tiler', 'Gardener'
   ];
 
@@ -382,22 +382,32 @@ export default function WorkerSignupForm() {
                 showPassword={showConfirmPassword}
                 onTogglePassword={() => setShowConfirmPassword(!showConfirmPassword)}
               />
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Select Your Skill
+                  Enter Your Skill
                 </label>
-                <select
+
+                <input
+                  type="text"
                   name="skills"
+                  list="skills-list"
                   value={formData.skills}
-                  onChange={(e) => setFormData(prev => ({ ...prev, skills: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      skills: e.target.value,
+                    }))
+                  }
                   className="w-full px-4 py-3 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-2xl focus:border-orange-500 dark:focus:border-orange-600 outline-none transition-colors"
-                >
-                  <option value="">Choose your main skill</option>
+                  placeholder="Choose your main skill"
+                />
+
+                <datalist id="skills-list">
                   {skillsList.map((skill) => (
-                    <option key={skill} value={skill}>{skill}</option>
+                    <option key={skill} value={skill} />
                   ))}
-                </select>
+                </datalist>
+
                 {errors.skills && (
                   <p className="text-sm text-red-600 dark:text-red-400 mt-1 flex items-center gap-1">
                     <AlertCircle className="w-4 h-4" /> {errors.skills}

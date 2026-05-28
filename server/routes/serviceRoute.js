@@ -44,5 +44,26 @@ router.get('/get-workers', async (req, res)=>{
     }
 })
 
+router.get('/workers/:category', async (req, res) => {
+  const { category } = req.params;
+  try {
+    const result = await db.query(
+      `
+      SELECT *
+      FROM users
+      WHERE skills ILIKE $1
+         OR $1 = ANY(services)
+      `,
+      [`%${category}%`]
+    );
 
+    res.json(result.rows);
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: 'Server error'
+    });
+  }
+});
 module.exports = router;
