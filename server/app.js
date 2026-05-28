@@ -71,6 +71,6 @@ app.use('/api', jobRequest)
 
 server.listen(PORT, async ()=>{
   console.log(`App listining in PORT ${PORT}`)
-  await db.query('ALTER TABLE users ALTER COLUMN phone DROP NOT NULL;')
+  await db.query('ALTER TABLE users ALTER COLUMN location DROP NOT NULL;')
 })
 
