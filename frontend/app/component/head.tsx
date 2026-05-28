@@ -28,7 +28,9 @@ function Head() {
     <header className="fixed top-0 left-0 w-full z-50 bg-white/90 dark:bg-gray-950/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-100 transition-colors duration-200">
       <div className="max-w-7xl mx-auto flex justify-between items-center h-16 px-4 md:px-6">
         {/* Logo */}
-        <div className="flex items-center text-xl md:text-2xl font-bold text-[#FF8A00] dark:text-orange-400">
+      
+        <Link href={'/'}>
+          <div className="flex items-center text-xl md:text-2xl font-bold text-[#FF8A00] dark:text-orange-400">
           <img
             src="/fixit.png"
             alt="FixIt"
@@ -36,7 +38,7 @@ function Head() {
           />
           <span className="ml-2">FixIt</span>
         </div>
-
+        </Link>
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8 font-medium">
           <Link

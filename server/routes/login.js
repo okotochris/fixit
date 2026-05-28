@@ -87,7 +87,7 @@ router.post('/signup', upload.single('profilePhoto'), async (req, res)=>{
         res.status(200).json({message: 'Verification code sent to email'});
 
     } catch (error) {
-        console.log(error.message);
+        console.log(error);
         res.status(500).json({message: 'Internal server error'});
     }
     
@@ -159,33 +159,69 @@ router.get('/check_email', async (req, res)=>{
 })
 
 //LOGING USING EXTERNAL PROVIDER GOOGLE /APPLE
-router.post('/external-login', async (req, res)=>{
-  const {email, fullName, profilePhoto, latitude, longitude} = req.body;
+router.post('/external-login', async (req, res) => {
+  const { email, fullName, profilePhoto, latitude, longitude } = req.body;
+
+  console.log(req.body);
+
   try {
     // 1. Check if user exists
-    let result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+    let result = await db.query(
+      'SELECT * FROM users WHERE email = $1',
+      [email]
+    );
+
     let user;
 
     if (result.rows.length === 0) {
-      // 2. If user doesn't exist, create a new one
+      // 2. Create new user
       const newUserResult = await db.query(
-        `INSERT INTO users (fullName, email, profilePhoto, role, latitude, longitude) VALUES ($1, $2, $3, 'client', $4, $5) RETURNING *`,
+        `INSERT INTO users 
+        (fullName, email, profilePhoto, role, latitude, longitude) 
+        VALUES ($1, $2, $3, 'client', $4, $5) 
+        RETURNING *`,
         [fullName, email, profilePhoto, latitude, longitude]
       );
+
       user = newUserResult.rows[0];
+
     } else {
-   
-      user = result.rows[0];
+      // 3. Update existing user location
+      const updatedResult = await db.query(
+        `UPDATE users 
+         SET latitude = $1, longitude = $2 
+         WHERE id = $3 
+         RETURNING *`,
+        [latitude, longitude, result.rows[0].id]
+      );
+
+      user = updatedResult.rows[0];
     }
 
     // 4. Generate JWT
-    const token = jwt.sign({ email }, process.env.JWT_SECRET);
-    const userDetails = { password: undefined, ...user };
-    res.status(200).json({ token, userDetails });
+    const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    // 5. Remove password before sending response
+    const { password, ...userDetails } = user;
+
+    res.status(200).json({
+      token,
+      userDetails
+    });
 
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
+
+    res.status(500).json({
+      message: 'Internal server error'
+    });
   }
 });
 

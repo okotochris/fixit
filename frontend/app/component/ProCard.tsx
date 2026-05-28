@@ -25,6 +25,7 @@ function ProCard({ pro, requestService }: { pro: Professional; requestService: (
     let mounted = true;
 
     async function fetchDistance() {
+      console.log(pro)
       try {
         const result = await getDistanceFromUser(pro.latitude, pro.longitude);
         if (mounted) setDistance(result);

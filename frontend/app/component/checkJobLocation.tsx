@@ -28,6 +28,8 @@ export default async function getDistanceFromUser(
     const parsed = JSON.parse(stored);
     userLat = parsed.lat;
     userLng = parsed.lng;
+    console.log("localStorage", userLat, userLng)
+    console.log("Job", jobLat, jobLng)
   } else {
     const loc = await getUserLocation();
     userLat = loc.lat;

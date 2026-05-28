@@ -14,7 +14,11 @@ export default function useLocationSync(
       try {
         const newLoc = await getLocation();
         if (!isRunning || !newLoc) return; // ✅ FIX 1 (critical)
-
+        const {accuracy} = newLoc;
+        if(accuracy > 500){
+          console.log('wrong accuracy')
+          return;
+        }
         const oldLoc = localStorage.getItem("location");
 
         if (!oldLoc) {

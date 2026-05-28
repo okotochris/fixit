@@ -244,12 +244,17 @@ router.delete('/delete_service', async(req, res)=>{
 
 //UPDATE USER LOCATION 
 router.patch('/update-location', async (req, res)=>{
-  const {id, latitude, longitude} = req.body;
+  const  { lat, lng, accuracy, id} = req.body;
+  if(accuracy > 600){
+    res.status(401).json({message:"accuracy too low"})
+    return;
+  }
+  console.log("vistied", req.body)
   try {
-    await db.query(`UPDATE users SET latitude = $1, longitude = $2 WHERE id = $3`, [latitude, longitude, id]);
+    await db.query(`UPDATE users SET latitude = $1, longitude = $2 WHERE id = $3`, [lat, lng, id]);
     res.status(200).json({message: 'Location updated successfully'});
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
     res.status(500).json({message: 'Internal server error'});
   }
 })
