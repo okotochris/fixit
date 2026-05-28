@@ -151,18 +151,14 @@ router.get('/check_email', async (req, res)=>{
   const result = await db.query('SELECT email FROM users WHERE email=$1',[email])
 
   if(result.rows.length > 0){
-      console.log(result.rows)
     return res.status(200).json(true)
   }
-    console.log(result.rows)
   return res.status(404).json(false)
 })
 
 //LOGING USING EXTERNAL PROVIDER GOOGLE /APPLE
 router.post('/external-login', async (req, res) => {
   const { email, fullName, profilePhoto, latitude, longitude } = req.body;
-
-  console.log(req.body);
 
   try {
     // 1. Check if user exists

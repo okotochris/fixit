@@ -4,6 +4,7 @@ import { Metadata } from 'next'
 import { Search } from 'lucide-react'
 import Footer from './component/footer'
 import Jobs from './component/jobs'
+import Link from 'next/link';
 const serverUrl = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 
@@ -77,7 +78,7 @@ export default async function Home() {
     { step: 4, title: "Rate", description: "Mark the job complete and leave a review to help the community." }
   ]
   const pros = await getWorkers();
-
+  
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300">
@@ -96,11 +97,17 @@ export default async function Home() {
             Expert Help for Your <br /> Home Projects
           </h1>
 
-          <p className="text-lg text-gray-200 dark:text-gray-300 mb-8 drop-shadow">
-            Connect with thousands of skilled professionals in your area for any
-            <br /> job, big or small.
+          <p className="text-lg text-gray-200 dark:text-gray-300  drop-shadow">
+            Connect with thousands of skilled professionals in your area for any job, big or small.
           </p>
-
+          <div className='m-6'>
+              <Link
+            href={'/signup'}
+              className="px-5 py-2 rounded-lg bg-blue-500 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white transition shadow-sm font-medium"
+            >
+              create account
+            </Link>
+          </div>
           <div className="flex flex-col md:flex-row justify-center items-center bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm p-3 rounded-xl shadow-xl max-w-3xl mx-auto gap-3 border border-gray-200 dark:border-gray-700">
             <Search className="hidden lg:block mx-2 text-gray-500 dark:text-gray-400" size={20} />
 

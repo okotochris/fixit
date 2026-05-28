@@ -21,7 +21,10 @@ function Head() {
   }
 
   useEffect(() => {
-    getUser();
+   async function getUserDeta(){
+     getUser();
+   }
+   getUserDeta()
   }, []);
 
   return (
@@ -92,10 +95,10 @@ function Head() {
             </Link>
           ) : (
             <button
-              onClick={() => router.push("/signup/worker_signup")}
+              onClick={() => router.push("/signup")}
               className="px-5 py-2 rounded-lg bg-[#FF8A00] hover:bg-[#FF6A00] dark:bg-orange-600 dark:hover:bg-orange-500 text-white transition shadow-sm font-medium"
             >
-              Join as Pro
+              create account
             </button>
           )}
         </div>
@@ -139,9 +142,10 @@ function Head() {
 
             {username ? (
               <button
-                onClick={() => {
+                onClick={async () => {
                   localStorage.clear();
                   getUser();
+                  await signOut();
                   setOpen(false);
                 }}
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition text-gray-700 dark:text-gray-300"
@@ -169,12 +173,12 @@ function Head() {
             ) : (
               <button
                 onClick={() => {
-                  router.push("/signup/worker_signup");
+                  router.push("/signup");
                   setOpen(false);
                 }}
                 className="w-full px-5 py-3 rounded-lg bg-[#FF8A00] hover:bg-[#FF6A00] dark:bg-orange-600 dark:hover:bg-orange-500 text-white transition shadow-sm font-medium"
               >
-                Join as Pro
+                create account
               </button>
             )}
           </div>

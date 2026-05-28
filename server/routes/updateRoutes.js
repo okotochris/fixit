@@ -245,7 +245,7 @@ router.delete('/delete_service', async(req, res)=>{
 //UPDATE USER LOCATION 
 router.patch('/update-location', async (req, res)=>{
   const  { lat, lng, accuracy, id} = req.body;
-  if(accuracy > 600){
+  if(accuracy > 500){
     res.status(401).json({message:"accuracy too low"})
     return;
   }

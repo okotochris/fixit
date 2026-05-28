@@ -136,7 +136,7 @@ return (
                   <span>(120 reviews)</span>
                 </div>
                 <div className="hidden md:block text-gray-400 dark:text-gray-600">•</div>
-                <div>120 jobs completed</div>
+                {/* <div>120 jobs completed</div> */}
               </div>
 
               <div className="flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 text-sm text-gray-600 dark:text-gray-400">
@@ -170,7 +170,7 @@ return (
               >
                 Request Job
               </button>
-              {oepnShare && <div className='absolute top-14 right-0'>
+              {oepnShare && <div className='absolute -top-16 md:top-14 right-0'>
                 <BrandSocialShare slug={user?.slug || ""} />
               </div>}
             </div>
@@ -182,20 +182,22 @@ return (
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 space-y-12">
         <section>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">About</h2>
-          <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{user.description}</p>
+          <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{user.description || "No content yet"}</p>
         </section>
 
         <section>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Services Offered</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {user.services && user.services.map((service, i) => (
+            {user.services && user.services.length > 0 ? user.services.map((service, i) => (
               <div 
                 key={i} 
                 className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 text-center font-medium text-gray-800 dark:text-gray-200 hover:border-blue-400 dark:hover:border-blue-600 transition-colors shadow-sm hover:shadow"
               >
                 {service}
               </div>
-            ))}
+            ))
+          :"No service added"
+            }
           </div>
         </section>
 
@@ -204,7 +206,7 @@ return (
           <div 
             ref={targetRef}
             className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            {user.image && user.image.map((img, i) => (
+            {user.image && user.image.length > 0 ? user.image.map((img, i) => (
               <div 
                 key={i} 
                 className="w-full aspect-[4/3] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 cursor-pointer group"
@@ -216,7 +218,7 @@ return (
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
-            ))}
+            )):"No image"}
           </div>  
         </section>
 
