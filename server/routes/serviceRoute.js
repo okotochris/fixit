@@ -47,16 +47,21 @@ router.get('/get-workers', async (req, res)=>{
 router.get('/workers/:category', async (req, res) => {
   const { category } = req.params;
   try {
-    const result = await db.query(
-      `
-      SELECT *
-      FROM users
-      WHERE skills ILIKE $1
-         OR $1 = ANY(services)
-      `,
-      [`%${category}%`]
-    );
-
+   const result = await db.query(
+        `
+        SELECT *,
+            GREATEST(
+            similarity(skills, $1),
+            MAX(similarity(unnest(services), $1))
+            ) AS score
+        FROM users
+        WHERE
+            skills % $1
+            OR services && ARRAY[$1]
+        ORDER BY score DESC
+        `,
+        [category]
+        );
     res.json(result.rows);
 
   } catch (error) {
