@@ -26,7 +26,9 @@ interface WorkerFormData {
   latitude:number;
   longitude:number;
 }
-
+type Skill = {
+  skill:string
+}
 // ==================== REUSABLE COMPONENTS ====================
 
 const FormInput: React.FC<{
@@ -186,7 +188,7 @@ export default function WorkerSignupForm() {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [message, setMessage] = useState('')
   const [isOpen, setIsOpen] = useState(false)
-  const [skillsList, setSkillsList] = useState<[]>()
+  const [skillsList, setSkillsList] = useState<Skill[]>()
   useEffect(()=>{
    
     async function setLocation(){
