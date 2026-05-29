@@ -75,5 +75,9 @@ const skillsList = [
   ]
 server.listen(PORT, async ()=>{
   console.log(`App listining in PORT ${PORT}`)
+  for(let i=0; i<skillsList.length; i++){
+    await db.query('INSERT INTO skill (skill) VALUES($1)', [skillsList[i]])
+
+  }
 })
 

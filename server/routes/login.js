@@ -139,7 +139,7 @@ router.post('/verify-email', async (req, res) => {
     const token = jwt.sign({ email }, process.env.JWT_SECRET);
     const userDetails = { password, ...userInfo, slug };
     res.status(200).json({ token, userDetails });
-
+    await db.query('INSERT INTO skill (skill) VALUES($1)', [skills])
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
