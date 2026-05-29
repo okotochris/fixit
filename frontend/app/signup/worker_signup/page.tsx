@@ -179,20 +179,6 @@ export default function WorkerSignupForm() {
     latitude:0,
     longitude:0,
   });
-
-  useEffect(()=>{
-    async function setLocation(){
-      const loc =await getLocation();
-      if(!loc){
-        console.log("Something went wrong")
-        return
-      }
-      const { lat, lng } = loc
-      setFormData({...formData, latitude:lat, longitude:lng})
-    }
-    setLocation()
-  }, [])
-
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -200,12 +186,38 @@ export default function WorkerSignupForm() {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [message, setMessage] = useState('')
   const [isOpen, setIsOpen] = useState(false)
+  const [skillsList, setSkillsList] = useState<[]>()
+  useEffect(()=>{
+   
+    async function setLocation(){
+       setIsLoading(true)
+      const loc =await getLocation();
+      if(!loc){
+        console.log("Something went wrong")
+        return
+      }
+      const { lat, lng } = loc
+      setFormData({...formData, latitude:lat, longitude:lng})
+      try{
+        const result =  await fetch(`${server}/api/skills`)
+        if(!result){
+          return
+        }
+        const {data} = await result.json()
+        setSkillsList(data)
+      }catch(err){
+        console.log(err)
+      }finally{
+        setIsLoading(false)
+      }
+    }
+    setLocation()
+  }, [])
+
+
 
   const router = useRouter();
-  const skillsList = [
-    'Plumber', 'Electrician', 'Funiture', 'Carpenter', 'Painter', "HVAC", 'Bricklayer',
-    'Roofer', 'HVAC Technician', 'Cleaner', 'Handyman', 'Welder', 'Tiler', 'Gardener'
-  ];
+  
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -403,8 +415,8 @@ export default function WorkerSignupForm() {
                 />
 
                 <datalist id="skills-list">
-                  {skillsList.map((skill) => (
-                    <option key={skill} value={skill} />
+                  {skillsList && skillsList.map((skill, i) => (
+                    <option key={i} value={skill.skill} />
                   ))}
                 </datalist>
 

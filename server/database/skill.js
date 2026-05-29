@@ -4,7 +4,7 @@ async function skill(){
          db.query(`
             CREATE TABLE IF NOT EXISTS skill(
             id SERIAL PRIMARY KEY,
-            skill TEXT
+            skill TEXT UNIQUE
         )
         `)
         console.log("Skill table created ✅")

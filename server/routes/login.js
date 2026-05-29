@@ -221,4 +221,14 @@ router.post('/external-login', async (req, res) => {
   }
 });
 
+//FETCH SKILLS
+router.get('/skills', async (req, res)=>{
+  try {
+    const data = await db.query('SELECT * FROM skill')
+    res.status(200).json({data:data.rows})
+  } catch (error) {
+    res.status(500).json({message:"Server error"})
+    console.log(error)
+  }
+})
 module.exports = router;
