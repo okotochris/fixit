@@ -192,7 +192,7 @@ export default function WorkerSignupForm() {
   useEffect(()=>{
    
     async function setLocation(){
-       setIsLoading(true)
+      
       const loc =await getLocation();
       if(!loc){
         console.log("Something went wrong")
@@ -209,8 +209,6 @@ export default function WorkerSignupForm() {
         setSkillsList(data)
       }catch(err){
         console.log(err)
-      }finally{
-        setIsLoading(false)
       }
     }
     setLocation()
