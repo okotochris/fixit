@@ -69,10 +69,7 @@ app.use('/api', profileRoute)
 app.use('/api', serviceRoute)
 app.use('/api', jobRequest)
 
-const skillsList = [
-    'Plumber', 'Electrician', 'Funiture', 'Carpenter', 'Painter', "HVAC", 'Bricklayer',
-    'Roofer', 'HVAC Technician', 'Cleaner', 'Handyman', 'Welder', 'Tiler', 'Gardener'
-  ]
+
 server.listen(PORT, async ()=>{
   console.log(`App listining in PORT ${PORT}`)
  

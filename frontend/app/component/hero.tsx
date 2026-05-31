@@ -8,7 +8,6 @@ import FancyLoader from './loading'
 function Hero() {
   const [isLogin, setIsLogin] = useState(false)
   const [searItem, setSearchItem] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   useEffect(()=>{
     async function isLogin(){

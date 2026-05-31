@@ -315,5 +315,39 @@ router.patch('/upgrade-to-professional', async (req, res) => {
   }
 });
 
+router.patch("/update-phone", async (req, res) => {
+  const { id, phone } = req.body;
+  console.log(req.body)
+
+  if (!id || !phone) {
+    return res.status(400).json({
+      message: "User id and phone are required",
+    });
+  }
+
+  try {
+    const result = await db.query(
+      `
+      UPDATE users
+      SET phone = $1
+      WHERE id = $2
+      RETURNING id, fullname, email, phone
+      `,
+      [phone, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      message: "Contact updated successfully",
+      user: result.rows[0],
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 module.exports = router;

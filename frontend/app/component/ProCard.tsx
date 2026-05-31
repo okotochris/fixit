@@ -46,12 +46,12 @@ function ProCard({ pro, requestService }: { pro: Professional; requestService: (
       
       <div className="relative">
         <img
-          src={pro.coverphoto}
+          src={pro.coverphoto || 'https://placehold.co/600x400?text=No+Image'}
           alt={`${pro.fullname} cover`}
           className="w-full h-48 object-cover"
         />
         <img
-          src={pro.profilephoto}
+          src={pro.profilephoto || 'https://placehold.co/300x300?text=Profile'}
           alt={pro.fullname}
           className="absolute w-20 h-20 rounded-full border-4 border-white dark:border-gray-800 -bottom-10 left-1/2 -translate-x-1/2 object-cover"
 

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import getLocation from "../component/getUserLocation";
 import FancyLoader from "../component/loading";
+import ContactPopup from "../component/addContact";
 
 const serverUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -39,10 +40,12 @@ function Request_service() {
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [userId, setUserId] = useState("")
   const [loading, setLoading] = useState(false)
+  const [showPopup, setShowPopup] = useState(false);
 
 
 useEffect(() => {
   const isUserSelected = async () => {
+     
     try {
       const workerData = localStorage.getItem("worker");
 
@@ -58,9 +61,13 @@ useEffect(() => {
         router.push("/login");
         return;
       }
-
+      
       const worker = JSON.parse(workerData);
       const user = JSON.parse(userData);
+      //CHECK IF USER HAS PHONE NUMBER
+      if(!user.phone){
+        setShowPopup(true)
+      }
 
       setUserId(user.id);
       setWorker(worker);
@@ -143,12 +150,24 @@ async function handleRequest(e: React.FormEvent) {
     formData.append("scheduled_date",  reqData.scheduled_date || isSelected);
     formData.append("address", reqData.address);
     formData.append("time", reqData.time);
-    const loc = await getLocation();
-    if(!loc){
-      console.log("Somthing went wrong")
-      return
-    }
-    const { lat, lng } = loc
+
+   
+    const userLocation = localStorage.getItem('location');
+
+        let loc;
+
+        if (!userLocation) {
+          loc = await getLocation();
+        } else {
+          loc = JSON.parse(userLocation);
+        }
+
+        if (!loc) {
+          console.log("Something went wrong");
+          return;
+        }
+
+        const { lat, lng } = loc;
 
     formData.append("latitude", lat.toString());
     formData.append("longitude", lng.toString());
@@ -452,6 +471,8 @@ async function handleRequest(e: React.FormEvent) {
         </div>
       </div>
        {loading && <FancyLoader fullScreen message="Requesting service..." />}
+       <ContactPopup isOpen={showPopup} onSave={()=>{setShowPopup(false)}}/>
+      
       <Footer />
     </div>
   );

@@ -19,7 +19,7 @@ export default function ContactPopup({ info, open, onClose }: Props) {
   const chatUrl = `/request_service/inbox/message`;
   const phoneNumber = info.client_contact;
 
-  const message = `Hi, I just accepted the work you posted on FixIt: ${info.description}`;
+  const message = `Hi, I am from serviceHub can we do business: ${info.description}`;
 
   const whatsappUrl = `https://wa.me/${phoneNumber.replace(
     /\D/g,
