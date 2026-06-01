@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import ProCard from "./ProCard";
 import useLocationSync from "./utility/useLocationSync";
+import { useCallback } from "react";
 
 
 // Better name: singular type for one item
@@ -42,21 +43,21 @@ function ProsList({ pros }: ProsListProps) {
     router.push("/request_service");
   }
 
-  async function updateDBLocation(newLoc: { lat: number; lng: number }) {
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-    if (!user.id) return;
+ const updateDBLocation = useCallback(async (newLoc: { lat: number; lng: number }) => {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  if (!user.id) return;
 
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/update-location`,
-      {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...newLoc, id: user.id }),
-      }
-    );
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/update-location`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...newLoc, id: user.id }),
+    }
+  );
 
-    return res.json();
-  }
+  return res.json();
+}, []);
 
   // 🔥 CLEAN: runs once automatically
   useLocationSync(updateDBLocation);

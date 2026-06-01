@@ -1,7 +1,7 @@
 'use client';
-import {Edit, ImagePlus, Share2,  Trash2Icon, TrashIcon, ViewIcon, X } from 'lucide-react';
+import { Edit, ImagePlus, Share2, Trash2Icon, TrashIcon, ViewIcon, X } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Loading from '../component/loading';
 import Head from '../component/head';
 import { useImageViewer } from '../component/useImageView'
@@ -22,27 +22,28 @@ type User = {
   description: string;
   coverphoto: string;
   profilephoto: string;
-  skills:string;
-  services:string[]
-  slug:string
+  skills: string;
+  services: string[]
+  slug: string
 };
 type Job = {
-  id:string,
-  service_type:string
-  job_title:string,
-  description:string,
-  scheduled_date:string,
-  job_photos:string[]
-  quote_amount:string,
-  slug:string,
-  status:string
-  created_at:string,
-  quote_status:string
+  id: string,
+  service_type: string
+  job_title: string,
+  description: string,
+  scheduled_date: string,
+  job_photos: string[]
+  quote_amount: string,
+  slug: string,
+  status: string
+  created_at: string,
+  quote_status: string
 
 }
 
 export default function Profile() {
   const router = useRouter();
+   const pathname = usePathname();
   const [user, setUser] = useState<User | null>()
   const [isEditingAbout, setIsEditingAbout] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -53,20 +54,21 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false)
   const [services, setServices] = useState("")
   const [isOpen, setIsOpen] = useState(false)
-  const {image, openImage, closeImage } = useImageViewer();
+  const { image, openImage, closeImage } = useImageViewer();
   const [currentImage, setCurrentImage] = useState<string>('')
   const [openShare, setOpenShare] = useState(false)
   const [recentJob, setRecentJob] = useState<Job[] | null>(null)
+  const [isRecentJob, setIsRecentJob] = useState(false)
   const targetRef = useRef(null)
 
   useEffect(() => {
-    async function getUser(){
-    const localUserData = localStorage.getItem('user');
-    if (!localUserData) {
-       router.push('/login');
-       return
-    } 
-    const data = JSON.parse(localUserData);
+    async function getUser() {
+      const localUserData = localStorage.getItem('user');
+      if (!localUserData) {
+        router.push('/login');
+        return
+      }
+      const data = JSON.parse(localUserData);
       setUser(data);
       setAbout(data.description || '');
     }
@@ -74,31 +76,31 @@ export default function Profile() {
   }, []);
 
   //run base on view port
-const getRecentJob = async ()=>{
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/recent-job?id=${user?.id}`)
-  if(!res.ok){
-    return
-  }
-  const data = await res.json()
-  setRecentJob(data)
-}
-  useEffect(()=>{
-    const observer = new IntersectionObserver(entries=>{
-      entries.forEach(entry=>{
-        if(entry.isIntersecting){
-          getRecentJob()
-        }
-      })
-    })
-      if (targetRef.current) {
-    observer.observe(targetRef.current);
-  }
+  
+  useEffect(() => {
+    async function getRecentJob(){
+    
+    const localUserData = localStorage.getItem('user');
+      if (!localUserData) {
+        router.push('/login');
+        return
+      }
+    const user = await JSON.parse(localUserData)
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/recent-job?id=${user?.id}`)
 
-  // ✅ Proper cleanup
-  return () => {
-    observer.disconnect();
-  };
-  },[])
+      if (!res.ok) {
+        return
+      }
+      const data = await res.json()
+      setRecentJob(data)
+      setIsRecentJob(true)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  getRecentJob()
+  }, [])
 
   async function handleSave() {
     setIsLoading(true);
@@ -191,43 +193,43 @@ const getRecentJob = async ()=>{
   async function handleServiceUpload() {
     setIsLoading(true)
     try {
-        const data = await fetch(`${server}/api/update-services?id=${user?.id}`,{
-          method:"POST",
-          headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({services})
-        })
-        if(!data) {
-          console.log("Something went wrong") 
-        }else{
-           localStorage.setItem(
-            'user',
-            JSON.stringify({
-              ...user,
-              services: [...(user?.services || []), services]
-            })
-          );
-          const userInfo = localStorage.getItem('user')
-          if(userInfo){
-            const userData = JSON.parse(userInfo)
-            setUser(userData);
-          }
+      const data = await fetch(`${server}/api/update-services?id=${user?.id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ services })
+      })
+      if (!data) {
+        console.log("Something went wrong")
+      } else {
+        localStorage.setItem(
+          'user',
+          JSON.stringify({
+            ...user,
+            services: [...(user?.services || []), services]
+          })
+        );
+        const userInfo = localStorage.getItem('user')
+        if (userInfo) {
+          const userData = JSON.parse(userInfo)
+          setUser(userData);
         }
-        
+      }
+
     } catch (error) {
       console.log(error)
-    }finally{
+    } finally {
       setIsLoading(false)
       setIsEditing(false)
       setServices('')
     }
   }
 
-  async function deleteItem(service:string, url: string) {
+  async function deleteItem(service: string, url: string) {
     // Use 'type' to determine the URL or body logic
     const res = await fetch(`${server}/api/${url}?id=${user?.id}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({service }) // Tell backend exactly what to delete
+      body: JSON.stringify({ service }) // Tell backend exactly what to delete
     });
 
     if (!res.ok) {
@@ -376,19 +378,23 @@ const getRecentJob = async ()=>{
 
               {user?.role !== 'client' && (
                 <p className="text-xl font-medium text-blue-600 dark:text-blue-400">
-                  Professional {user?.skills}
+                  {user?.skills ? 'Professional ' + user?.skills : ""}
                 </p>
               )}
 
-              <div className="flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 text-sm text-gray-700 dark:text-gray-300">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-amber-500 text-xl">★</span>
-                  <span className="font-semibold">4.8</span>
-                  <span>(120 reviews)</span>
-                </div>
-                <div className="hidden md:block text-gray-400 dark:text-gray-500">•</div>
-                <div>120 jobs completed</div>
-              </div>
+              {
+                user?.role == "worker" ?
+                  <div className="flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 text-sm text-gray-700 dark:text-gray-300">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-amber-500 text-xl">★</span>
+                      <span className="font-semibold">4.8</span>
+                      {/* <span>(1 reviews)</span> */}
+                    </div>
+                    <div className="hidden md:block text-gray-400 dark:text-gray-500">•</div>
+                    <div>120 jobs completed</div>
+                  </div> :
+                  <p></p>
+              }
 
               <div className="flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 text-sm text-gray-600 dark:text-gray-400">
                 <div className="flex items-center gap-1.5">
@@ -407,8 +413,8 @@ const getRecentJob = async ()=>{
             </div>
 
             {/* Actions */}
-            <div 
-              onClick={()=>{openShare?setOpenShare(false): setOpenShare(true)}}
+            <div
+              onClick={() => { openShare ? setOpenShare(false) : setOpenShare(true) }}
               className="relative flex flex-col items-center justify-center md:justify-end gap-3 mt-4 md:mt-0">
               <button className="flex items-center gap-2 px-5 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium rounded-lg transition">
                 <Share2 size={18} />
@@ -453,13 +459,13 @@ const getRecentJob = async ()=>{
                   className="relative bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700 text-center font-medium text-gray-800 dark:text-gray-200 hover:border-blue-400 dark:hover:border-blue-500 transition-colors shadow-sm"
                 >
                   {service}
-                  <Trash2Icon 
-                    onClick={()=>deleteItem(service,  'delete_service')}
+                  <Trash2Icon
+                    onClick={() => deleteItem(service, 'delete_service')}
                     className='absolute -top-2.5 -right-0.5 hover:text-red-500' />
                 </div>
-              )):"No services added"
-            }
-              
+              )) : "No services added"
+              }
+
               <button
                 onClick={() => setIsEditing(true)}
                 className="flex items-center justify-center bg-orange-400 p-4 rounded-xl border border-gray-200 dark:border-gray-700  font-medium text-white hover:border-blue-400 dark:hover:border-blue-500 transition-colors shadow-sm">
@@ -472,17 +478,17 @@ const getRecentJob = async ()=>{
 
         {/* display Options  */}
         {isOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center"
-          onClick={() => setIsOpen(false)}
-        >
-          {/* Background Overlay */}
-          <div className=" absolute inset-0 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200" />
-
-          {/* Action Pill */}
           <div
-            onClick={(e) => e.stopPropagation()}
-            className="
+            className="fixed inset-0 z-50 flex items-center justify-center"
+            onClick={() => setIsOpen(false)}
+          >
+            {/* Background Overlay */}
+            <div className=" absolute inset-0 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200" />
+
+            {/* Action Pill */}
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="
               relative
               flex items-center gap-1
               bg-white/80 backdrop-blur-xl
@@ -492,9 +498,9 @@ const getRecentJob = async ()=>{
               border border-gray-200/50
               animate-in zoom-in-95 duration-200
             "
-          >
-            <button
-              className="
+            >
+              <button
+                className="
                 flex items-center gap-2
                 px-4 py-2
                 text-sm font-medium text-gray-700
@@ -503,16 +509,16 @@ const getRecentJob = async ()=>{
                 active:scale-95
                 transition-all duration-200
               "
-              onClick={() => openImage(currentImage)}
-            >
-              <ViewIcon className="h-4 w-4" />
-              <span>View</span>
-            </button>
+                onClick={() => openImage(currentImage)}
+              >
+                <ViewIcon className="h-4 w-4" />
+                <span>View</span>
+              </button>
 
-            <div className="w-px h-6 bg-gray-200" />
+              <div className="w-px h-6 bg-gray-200" />
 
-            <button
-              className="
+              <button
+                className="
                 flex items-center gap-2
                 px-4 py-2
                 text-sm font-medium text-red-600
@@ -521,18 +527,18 @@ const getRecentJob = async ()=>{
                 active:scale-95
                 transition-all duration-200
               "
-              onClick={()=>deleteItem(currentImage, 'delete_image')}
-            >
-              <TrashIcon className="h-4 w-4" />
-              <span>Delete</span>
-            </button>
+                onClick={() => deleteItem(currentImage, 'delete_image')}
+              >
+                <TrashIcon className="h-4 w-4" />
+                <span>Delete</span>
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
         {/* Gallery - Professionals only */}
         {user?.role !== 'client' && (
           <section
-           ref={targetRef}
+            ref={targetRef}
           >
             <h2 className="text-2xl md:text-3xl font-bold mb-5 dark:text-white">Gallery</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-5">
@@ -540,9 +546,9 @@ const getRecentJob = async ()=>{
                 <div
                   key={i}
                   className=" relative rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-300"
-                  onClick={()=>{setIsOpen(true); setCurrentImage(img)}}
+                  onClick={() => { setIsOpen(true); setCurrentImage(img) }}
                 >
-    
+
                   <img
                     src={img}
                     alt={`Project ${i + 1}`}
@@ -582,98 +588,96 @@ const getRecentJob = async ()=>{
           </section>
         )}
         {/* PREVIOUS JOB DONE */}
-                {/* Recnet Job */}
-    <section>
-  <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
-    Recent Jobs
-  </h2>
+        {/* Recnet Job */}
+        <section>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
+            Recent Jobs
+          </h2>
 
-  {recentJob && recentJob.length > 0 ? (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {recentJob.map((job) => (
-        <div
-          key={job.id}
-          className="group relative rounded-3xl overflow-hidden bg-white dark:bg-zinc-900/50 border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1 flex flex-col"
-        >
-          {/* Top Accent Line */}
-          <div className="h-1 w-full bg-gradient-to-r from-cyan-400 via-violet-500 to-fuchsia-500" />
+          {recentJob && recentJob.length > 0 ? (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {recentJob.map((job) => (
+                <div
+                  key={job.id}
+                  className="group relative rounded-3xl overflow-hidden bg-white dark:bg-zinc-900/50 border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1 flex flex-col"
+                >
+                  {/* Top Accent Line */}
+                  <div className="h-1 w-full bg-gradient-to-r from-cyan-400 via-violet-500 to-fuchsia-500" />
 
-          {/* Header & Status */}
-          <div className="p-5">
-            <div className="flex justify-between items-start mb-3">
-              <span
-                className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-tighter border ${
-                  job.status === "accepted"
-                    ? "bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-400/30"
-                    : job.status === "pending"
-                    ? "bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-400/30"
-                    : "bg-red-50 text-red-600 border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-400/30"
-                }`}
-              >
-                {job.status}
-              </span>
-            </div>
-            
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-tight group-hover:text-cyan-600 dark:group-hover:text-cyan-300 transition truncate">
-              {job.job_title}
-            </h3>
-            <p className="text-[10px] font-bold tracking-widest uppercase text-slate-400 mt-1">
-              {job.service_type}
-            </p>
-          </div>
+                  {/* Header & Status */}
+                  <div className="p-5">
+                    <div className="flex justify-between items-start mb-3">
+                      <span
+                        className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-tighter border ${job.status === "accepted"
+                            ? "bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-400/30"
+                            : job.status === "pending"
+                              ? "bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-400/30"
+                              : "bg-red-50 text-red-600 border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-400/30"
+                          }`}
+                      >
+                        {job.status}
+                      </span>
+                    </div>
 
-          {/* Photos - Strictly limited to 2 */}
-          {job.job_photos?.length > 0 && (
-            <div className="px-5 pb-4">
-              <div className="flex gap-2">
-                {job.job_photos.slice(0, 2).map((photo, index) => (
-                  <div
-                    key={index}
-                    className={`relative overflow-hidden rounded-xl border border-slate-100 dark:border-white/5 ${
-                      job.job_photos.length === 1 ? "w-full h-32" : "w-1/2 h-24"
-                    }`}
-                  >
-                    <img
-                      src={photo}
-                      alt={`${job.job_title} ${index + 1}`}
-                      className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
-                    />
-                    {/* Badge for remaining photos if more than 2 exist */}
-                    {index === 1 && job.job_photos.length > 2 && (
-                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-[2px]">
-                         <span className="text-white text-xs font-black">+{job.job_photos.length - 2}</span>
-                      </div>
-                    )}
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-tight group-hover:text-cyan-600 dark:group-hover:text-cyan-300 transition truncate">
+                      {job.job_title}
+                    </h3>
+                    <p className="text-[10px] font-bold tracking-widest uppercase text-slate-400 mt-1">
+                      {job.service_type}
+                    </p>
                   </div>
-                ))}
-              </div>
+
+                  {/* Photos - Strictly limited to 2 */}
+                  {job.job_photos?.length > 0 && (
+                    <div className="px-5 pb-4">
+                      <div className="flex gap-2">
+                        {job.job_photos.slice(0, 2).map((photo, index) => (
+                          <div
+                            key={index}
+                            className={`relative overflow-hidden rounded-xl border border-slate-100 dark:border-white/5 ${job.job_photos.length === 1 ? "w-full h-32" : "w-1/2 h-24"
+                              }`}
+                          >
+                            <img
+                              src={photo}
+                              alt={`${job.job_title} ${index + 1}`}
+                              className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
+                            />
+                            {/* Badge for remaining photos if more than 2 exist */}
+                            {index === 1 && job.job_photos.length > 2 && (
+                              <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-[2px]">
+                                <span className="text-white text-xs font-black">+{job.job_photos.length - 2}</span>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action Button */}
+                  <div className="grid grid-cols-2 gap-3 mt-auto px-5 pb-5">
+                    <a
+                      href={`/job/${job.slug}`}
+                      className="flex items-center justify-center py-3 w-full bg-slate-100 dark:bg-white/5 hover:bg-slate-900 dark:hover:bg-white hover:text-white dark:hover:text-black text-slate-600 dark:text-zinc-300 font-bold text-xs rounded-xl transition-all duration-300"
+                    >
+                      View Details
+                    </a>
+                    <a
+                      href={`/job/${job.slug}`}
+                      className="flex items-center justify-center py-3 w-full bg-slate-900 text-white dark:bg-white/5 hover:bg-slate-500 dark:hover:bg-white hover:text-white dark:hover:text-black  dark:text-zinc-300 font-bold text-xs rounded-xl transition-all duration-300"
+                    >
+                      Done
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 bg-slate-50 dark:bg-white/5 rounded-3xl border border-dashed border-slate-200 dark:border-white/10">
+              <p className="text-slate-500 text-sm font-medium">No recent jobs found.</p>
             </div>
           )}
-
-          {/* Action Button */}
-          <div className="grid grid-cols-2 gap-3 mt-auto px-5 pb-5">
-            <a
-              href={`/job/${job.slug}`}
-              className="flex items-center justify-center py-3 w-full bg-slate-100 dark:bg-white/5 hover:bg-slate-900 dark:hover:bg-white hover:text-white dark:hover:text-black text-slate-600 dark:text-zinc-300 font-bold text-xs rounded-xl transition-all duration-300"
-            >
-              View Details
-            </a>
-            <a
-              href={`/job/${job.slug}`}
-              className="flex items-center justify-center py-3 w-full bg-slate-900 text-white dark:bg-white/5 hover:bg-slate-500 dark:hover:bg-white hover:text-white dark:hover:text-black  dark:text-zinc-300 font-bold text-xs rounded-xl transition-all duration-300"
-            >
-              Done
-            </a>
-          </div>
-        </div>
-      ))}
-    </div>
-  ) : (
-    <div className="text-center py-12 bg-slate-50 dark:bg-white/5 rounded-3xl border border-dashed border-slate-200 dark:border-white/10">
-      <p className="text-slate-500 text-sm font-medium">No recent jobs found.</p>
-    </div>
-  )}
-</section>
+        </section>
       </div>
 
       {/* Edit About Modal */}

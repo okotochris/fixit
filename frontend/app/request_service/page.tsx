@@ -41,6 +41,17 @@ function Request_service() {
   const [userId, setUserId] = useState("")
   const [loading, setLoading] = useState(false)
   const [showPopup, setShowPopup] = useState(false);
+  const [reqData, setReqData] = useState<RequestData>({
+  client_id: userId? userId : '',
+  worker_id: worker?.id ? worker?.id: "",
+  service_type: "",
+  job_title: "",
+  description: "",
+  scheduled_date: "As soon as possible",
+  job_photos: [],
+  address: "",
+  time: ""
+});
 
 
 useEffect(() => {
@@ -80,26 +91,17 @@ useEffect(() => {
   isUserSelected();
 }, [router]);
 useEffect(() => {
-  if (userId && worker?.id) {
+ async function getUserAndWorker(){
+   if (userId && worker?.id) {
     setReqData((prev) => ({
       ...prev,
       client_id: userId,
       worker_id: worker.id,
     }));
   }
+ }
+ getUserAndWorker()
 }, [userId, worker]);
-
-const [reqData, setReqData] = useState<RequestData>({
-  client_id: userId? userId : '',
-  worker_id: worker?.id ? worker?.id: "",
-  service_type: "",
-  job_title: "",
-  description: "",
-  scheduled_date: "As soon as possible",
-  job_photos: [],
-  address: "",
-  time: ""
-});
  
 // Handle file input change
  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

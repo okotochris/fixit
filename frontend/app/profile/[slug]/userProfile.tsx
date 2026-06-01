@@ -85,7 +85,7 @@ return (
       <div 
         className="h-64 md:h-80 w-full bg-cover bg-center"
         style={{ 
-          backgroundImage: `url(${user.coverphoto})`,
+          backgroundImage: `url(${user.coverphoto || 'https://placehold.co/600x400?text=No+Image'})`,
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
           backgroundSize: 'cover'
@@ -104,7 +104,7 @@ return (
                 className="w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border-4 border-white dark:border-gray-800 shadow-lg bg-gray-200 dark:bg-gray-700">
                
                 <img 
-                  src={user.profilephoto}
+                  src={user.profilephoto || 'https://placehold.co/300x300?text=Profile'}
                   alt={user.fullname} 
                   className="w-full h-full object-cover"
                 />

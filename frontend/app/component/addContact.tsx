@@ -77,7 +77,7 @@ export default function ContactPopup({
 
                 <input
                     type="tel"
-                    placeholder="Enter your phone number"
+                    placeholder="Enter your phone number e.g +23489000000"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     className="mb-4 w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-orange-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
