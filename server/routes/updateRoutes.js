@@ -16,17 +16,6 @@ router.post('/update-about', async (req, res)=>{
     }
 })
 
-router.post('/update-location', async (req, res)=>{
-    const {email, location} = req.body;
-    try {
-        await db.query(`UPDATE users SET location = $1 WHERE email = $2`, [location, email]);
-        res.status(200).json({message: 'Location updated successfully'});
-    } catch (error) {
-        console.log(error.message);
-        res.status(500).json({message: 'Internal server error'});
-    }
-})
-
 //UPDATE COVER PHOTO
 router.post('/upload-cover', upload.single('photo'), async (req, res) => {
     try {
@@ -245,7 +234,7 @@ router.delete('/delete_service', async(req, res)=>{
 //UPDATE USER LOCATION 
 router.patch('/update-location', async (req, res)=>{
   const  { lat, lng, accuracy, id} = req.body;
-  if(accuracy > 500){
+  if(accuracy > 200){
     res.status(401).json({message:"accuracy too low"})
     return;
   }

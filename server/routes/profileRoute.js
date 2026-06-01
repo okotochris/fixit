@@ -29,10 +29,14 @@ router.get('/get-user', async (req, res) => {
 });
 router.get('/recent-job', async(req, res)=>{
   const id = req.query.id
+  console.log(id)
+  let result;
   try {
-    const result = await db.query('SELECT * FROM jobs WHERE worker_id=$1 ORDER BY id DESC LIMIT 5', [id])
+    result = await db.query('SELECT * FROM jobs WHERE worker_id=$1 ORDER BY id DESC LIMIT 5', [id])
+    if(result.rowCount == 0){
+      result = await  db.query('SELECT * FROM jobs WHERE  client_id=$1 ORDER BY id DESC LIMIT 5', [id])
+    }
     res.status(200).json(result.rows)
-    console.log(result.rows)
   } catch (error) {
     console.log(error)
   }
