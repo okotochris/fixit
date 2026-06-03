@@ -91,7 +91,7 @@ function Head() {
               href="/profile"
               className="px-5 py-2 rounded-lg bg-[#FF8A00] hover:bg-[#FF6A00] dark:bg-orange-600 dark:hover:bg-orange-500 text-white transition shadow-sm font-medium"
             >
-              Dashboard
+              Profile
             </Link>
           ) : (
             <button
@@ -168,7 +168,7 @@ function Head() {
                 className="w-full px-5 py-3 rounded-lg bg-[#FF8A00] hover:bg-[#FF6A00] dark:bg-orange-600 dark:hover:bg-orange-500 text-white transition shadow-sm text-center font-medium"
                 onClick={() => setOpen(false)}
               >
-                Dashboard
+                Profile
               </Link>
             ) : (
               <button
