@@ -5,9 +5,9 @@ import ServiceList from "@/app/service/service";
 const serverUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export const metadata = {
-  title: "Explore and hire Services - FixIt Platform",
+  title: "Explore and hire Services - ServiceHub Platform",
   description:
-    "Discover top-rated local professionals for plumbing, electrical, carpentry, and more near you",
+    "Discover top-rated local professionals for skilled labour like plumbing, electrical, carpentry, and more near you",
 };
 
 type Services = {

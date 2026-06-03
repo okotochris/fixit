@@ -391,7 +391,7 @@ export default function Profile() {
                       {/* <span>(1 reviews)</span> */}
                     </div>
                     <div className="hidden md:block text-gray-400 dark:text-gray-500">•</div>
-                    <div>120 jobs completed</div>
+                    <div> jobs completed</div>
                   </div> :
                   <p></p>
               }

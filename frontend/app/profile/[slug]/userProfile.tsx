@@ -133,7 +133,7 @@ return (
                 <div className="flex items-center gap-1.5">
                   <span className="text-amber-500 text-xl">★</span>
                   <span className="font-semibold text-gray-900 dark:text-gray-100">4.8</span>
-                  <span>(120 reviews)</span>
+                  {/* <span>(120 reviews)</span> */}
                 </div>
                 <div className="hidden md:block text-gray-400 dark:text-gray-600">•</div>
                 {/* <div>120 jobs completed</div> */}

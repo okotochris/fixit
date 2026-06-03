@@ -311,7 +311,7 @@ export default function WorkerSignupForm() {
           <div className="bg-white dark:bg-zinc-900 rounded-3xl shadow-xl dark:shadow-2xl border border-gray-100 dark:border-zinc-800 p-8">
             <div className="mb-8">
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Become a Professional</h2>
-              <p className="text-gray-600 dark:text-gray-400">Grow your business on FixIt</p>
+              <p className="text-gray-600 dark:text-gray-400">Grow your business on ServiceHub</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">

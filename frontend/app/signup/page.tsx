@@ -15,7 +15,7 @@ export default function SignupPage() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-100 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/20 mb-4">
             <Wrench className="w-8 h-8 text-orange-600 dark:text-orange-500" />
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-3 tracking-tight">FixIt</h1>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-3 tracking-tight">ServiceHub</h1>
           <p className="text-lg text-gray-600 dark:text-zinc-400">
             Connect with skilled professionals or find your next client
           </p>
