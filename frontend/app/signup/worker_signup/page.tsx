@@ -269,7 +269,7 @@ export default function WorkerSignupForm() {
     e.preventDefault();
     if (!validateForm()) return;
     if(!formData.latitude || !formData.longitude){
-      setMessage("Unable to retrieve your location. Please allow location access and refresh the page.")
+      setMessage("Unable to retrieve your location. Please allow location access, and refresh the page.")
       setIsOpen(true)
       return
     }

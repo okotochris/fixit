@@ -69,7 +69,7 @@ export default async function Home() {
     { item: "HVAC Technician", icon: "/hvac.png" },
     { item: "Cleaner", icon: "/cleaning.png" },
     { item: "Welder", icon: "/hvac.png" },
-    { item: "Baber", icon: "/hvac.png" }
+    { item: "Barber", icon: "/hvac.png" }
   ]
 
   const how_it_works = [
