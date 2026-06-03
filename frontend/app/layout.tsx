@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "serviceHub - Find Skilled Workers Near You",
-  description: "Connect with skilled professionals in your area like plumbers, electricians, carpenters and more.",
+  description: "Connect with skilled workers in your area like plumbers, electricians, carpenters and more.",
    icons: {
     icon: "/fixit.png",
   },

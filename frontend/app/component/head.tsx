@@ -60,7 +60,7 @@ function Head() {
             className="hover:text-[#FF8A00] dark:hover:text-orange-400 transition"
             href="/available_jobs"
           >
-            Jobs
+            Find Job
           </Link>
         </nav>
 
@@ -135,7 +135,7 @@ function Head() {
               href="/available_jobs"
               onClick={() => setOpen(false)}
             >
-              Jobs
+              Find Job
             </Link>
 
             <hr className="border-gray-200 dark:border-gray-700 my-2" />

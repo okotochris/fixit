@@ -3,7 +3,7 @@
  * the mathematically most accurate coordinate found.
  */
 const getLocation = (
-  maxRetries = 2,
+  maxRetries = 3,
   targetAccuracy = 100
 ): Promise<{ lat: number; lng: number; accuracy: number } | null> =>
   new Promise((resolve) => {

@@ -22,23 +22,23 @@ const server = createServer(app);
 
 
 app.use(express.json());
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:3001',
-  'https://resilient-cooperation-production.up.railway.app',
-   process.env.ALLOW_URL
-];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
-}));
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",").map(o => o.trim())
+  : [];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 
 //SETTING MIDDLEWARE
 const io = new Server(server, {
