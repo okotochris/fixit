@@ -5,7 +5,7 @@ function Footer() {
       <footer className="bg-gray-800 text-gray-400 py-6 mt-12 min-h-[434.1px]">
         <div className="container mx-auto flex flex-col md:flex-row justify-around ">
             <div className="p-4">
-              <h2 className="text-2xl font-bold mb-4 text-white">FixIt Platform</h2>
+              <h2 className="text-2xl font-bold mb-4 text-white">ServiceHub Platform</h2>
               <p className="text-gray-400 mb-4">
                 Connecting homeowners with trusted local<br/>
                 professionals for safe, reliable, and high-<br/>
@@ -36,7 +36,7 @@ function Footer() {
             </div>
 
           <div className='text-center mt-4 text-gray-400 border-t border-gray-700 pt-4'>
-            <p>&copy; {new Date().getFullYear()} FixIt Platform Inc. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} ServiceHub Platform Inc. All rights reserved.</p>
           </div>
       </footer>
   )

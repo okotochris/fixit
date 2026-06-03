@@ -7,6 +7,7 @@ import Link from "next/link";
 import PhoneInput from 'react-phone-number-input';
 import getLocation from '@/app/component/getUserLocation';
 import FancyLoader from '@/app/component/loading';
+import MessageModal from '@/app/component/messageModal';
 
 
 const server = process.env.NEXT_PUBLIC_API_URL;
@@ -189,13 +190,13 @@ export default function WorkerSignupForm() {
   const [message, setMessage] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const [skillsList, setSkillsList] = useState<Skill[]>()
+ 
   useEffect(()=>{
-   
     async function setLocation(){
-      
       const loc =await getLocation();
       if(!loc){
-        console.log("Something went wrong")
+        setMessage("Unable to retrieve your location. Please allow location access and refresh the page.")
+        setIsOpen(true)
         return
       }
       const { lat, lng } = loc
@@ -267,7 +268,11 @@ export default function WorkerSignupForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-
+    if(!formData.latitude || !formData.longitude){
+      setMessage("Unable to retrieve your location. Please allow location access and refresh the page.")
+      setIsOpen(true)
+      return
+    }
     setIsLoading(true);
     const data = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
@@ -484,6 +489,7 @@ export default function WorkerSignupForm() {
         </div>
       </div>
        {isLoading && <FancyLoader fullScreen message="Signing up..." />}
+       <MessageModal isOpen={isOpen} onClose={()=>setIsOpen(false)} message={message} />
     </div>
   );
 }

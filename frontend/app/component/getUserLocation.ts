@@ -1,65 +1,98 @@
-/**
- * Optimized for Worker Apps: Compares all retries and returns 
- * the mathematically most accurate coordinate found.
- */
+type LocationResult = {
+  lat: number;
+  lng: number;
+  accuracy: number;
+  source: "gps" | "denied";
+};
+
 const getLocation = (
   maxRetries = 3,
   targetAccuracy = 100
-): Promise<{ lat: number; lng: number; accuracy: number } | null> =>
+): Promise<LocationResult | null> =>
   new Promise((resolve) => {
+    if (typeof window === "undefined") return resolve(null);
+
     if (!navigator.geolocation) {
-      console.error("Geolocation is not supported");
+      console.error("Geolocation not supported");
       return resolve(null);
     }
 
     let attempts = 0;
-    let bestResult: { lat: number; lng: number; accuracy: number } | null = null;
+    let bestResult: LocationResult | null = null;
+    let hasResolved = false;
 
-    const tryGetLocation = () => {
+    const saveToCache = (loc: LocationResult) => {
+      try {
+        localStorage.setItem("location", JSON.stringify(loc));
+      } catch {}
+    };
+
+    const finish = (loc: LocationResult | null) => {
+      if (hasResolved) return;
+      hasResolved = true;
+
+      if (loc) saveToCache(loc);
+      resolve(loc);
+    };
+
+    const tryGPS = () => {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude, accuracy } = position.coords;
-          const currentData = { lat: latitude, lng: longitude, accuracy };
+        (pos) => {
+          const { latitude, longitude, accuracy } = pos.coords;
 
-          // Update bestResult if this is the first result OR more accurate than the previous best
+          const current: LocationResult = {
+            lat: latitude,
+            lng: longitude,
+            accuracy,
+            source: "gps",
+          };
+
+          // keep best accuracy
           if (!bestResult || accuracy < bestResult.accuracy) {
-            bestResult = currentData;
+            bestResult = current;
           }
 
-
-          // 1. If "Perfect" accuracy is hit -> Resolve immediately
+          // good enough → return immediately
           if (accuracy <= targetAccuracy) {
-
-            return resolve(currentData);
+            return finish(current);
           }
 
-          // 2. If not perfect, handle retries
           attempts++;
 
           if (attempts < maxRetries) {
-
-            setTimeout(tryGetLocation, 1500); 
+            setTimeout(tryGPS, 1200);
           } else {
-            // 3. All retries exhausted -> Return the absolute best one we found
-
-            resolve(bestResult);
+            // return best found GPS result
+            return finish(bestResult);
           }
         },
+
         (err) => {
-          console.error("Geolocation Error:", err.message);
-          // If we already have a partial result from a previous attempt, return it.
-          // Otherwise, return null.
-          resolve(bestResult);
+          console.warn("Location error:", err.code, err.message);
+
+          // 🚨 USER DENIED / LOCATION OFF
+          if (err.code === 1) {
+            return finish({
+              lat: 0,
+              lng: 0,
+              accuracy: 999999,
+              source: "denied",
+            });
+          }
+
+          // other errors → return best we have or null
+          return finish(bestResult);
         },
+
         {
           enableHighAccuracy: true,
-          timeout: 10000,
+          timeout: 12000,
           maximumAge: 0,
         }
       );
     };
 
-    tryGetLocation();
+    tryGPS();
   });
 
 export default getLocation;
