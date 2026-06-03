@@ -14,8 +14,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FixIt - Find Skilled Workers Near You",
-  description: "Connect with plumbers, electricians, carpenters and more.",
+  title: "serviceHub - Find Skilled Workers Near You",
+  description: "Connect with skilled professionals in your area like plumbers, electricians, carpenters and more.",
+   icons: {
+    icon: "/fixit.png",
+  },
 };
 
 export default function RootLayout({

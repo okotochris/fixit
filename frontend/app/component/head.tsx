@@ -39,7 +39,7 @@ function Head() {
             alt="FixIt"
             className="w-8 h-8 md:w-9 md:h-9"
           />
-          <span className="ml-2">FixIt</span>
+          <div className="ml-2">service<span className="text-blue-500 dark:text-blue-400">Hub</span></div>
         </div>
         </Link>
         {/* Desktop Nav */}
@@ -54,7 +54,7 @@ function Head() {
             className="hover:text-[#FF8A00] dark:hover:text-orange-400 transition"
             href="/service"
           >
-            Find Professionals
+            Find Worker
           </Link>
           <Link
             className="hover:text-[#FF8A00] dark:hover:text-orange-400 transition"
@@ -128,7 +128,7 @@ function Head() {
               href="/service"
               onClick={() => setOpen(false)}
             >
-              Find Professionals
+              Find Worker
             </Link>
             <Link
               className="hover:text-[#FF8A00] dark:hover:text-orange-400 transition py-1"

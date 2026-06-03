@@ -10,7 +10,7 @@ const serverUrl = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 
 export const metadata: Metadata = {
-  title: "FixIt - Find Skilled Workers Near You",
+  title: "serviceHub - Find Skilled Workers Near You",
   description: "Connect with plumbers, painters, cleaners,  electricians, carpenters and more.",
 }
 type Worker={
@@ -68,9 +68,9 @@ export default async function Home() {
     { item: "Painter", icon: "/painting.png" },
     { item: "HVAC Technician", icon: "/hvac.png" },
     { item: "Cleaner", icon: "/cleaning.png" },
-    { item: "Gardener", icon: "/gardening.png" },
-    { item: "Welder", icon: "/welding.png" },
-    { item: "Baber", icon: "/babing.png" }
+    { item: "Gardener", icon: "/hvac.png" },
+    { item: "Welder", icon: "/hvac.png" },
+    { item: "Baber", icon: "/hvac.png" }
   ]
 
   const how_it_works = [
