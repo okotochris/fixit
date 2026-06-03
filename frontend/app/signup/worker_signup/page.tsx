@@ -195,8 +195,6 @@ export default function WorkerSignupForm() {
     async function setLocation(){
       const loc =await getLocation();
       if(!loc){
-        setMessage("Unable to retrieve your location. Please allow location access and refresh the page.")
-        setIsOpen(true)
         return
       }
       const { lat, lng } = loc
@@ -269,9 +267,14 @@ export default function WorkerSignupForm() {
     e.preventDefault();
     if (!validateForm()) return;
     if(!formData.latitude || !formData.longitude){
-      setMessage("Unable to retrieve your location. Please allow location access, and refresh the page.")
-      setIsOpen(true)
-      return
+      const loc =await getLocation();
+      if(!loc){
+        setMessage("Unable to retrieve your location. Please allow location access and refresh the page.")
+        setIsOpen(true)
+        return
+      }
+        const { lat, lng } = loc
+      setFormData({...formData, latitude:lat, longitude:lng})
     }
     setIsLoading(true);
     const data = new FormData();
