@@ -7,6 +7,7 @@ import getLocation from "../component/getUserLocation";
 import Link from "next/link";
 import FancyLoader from "../component/loading";
 
+
 const serverUrl = process.env.NEXT_PUBLIC_API_URL
 
 export default function LoginPage() {
@@ -208,12 +209,12 @@ export default function LoginPage() {
               </div>
 
               <div className="text-sm">
-                <a
-                  href="/forgot-password"
+                <Link
+                  href="/forgot_password"
                   className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition"
                 >
                   Forgot your password?
-                </a>
+                </Link>
               </div>
             </div>
 
