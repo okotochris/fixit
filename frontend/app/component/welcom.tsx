@@ -10,7 +10,7 @@ function SuccessScreen() {
             <CheckCircle className="w-12 h-12 text-green-600" />
           </div>
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-3">Welcome to FixIt!</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-3">Welcome to serviceHub!</h1>
         {/* <p className="text-gray-600 mb-8">
           {role === 'client'
             ? 'Your account has been created successfully. Start browsing professionals now!'

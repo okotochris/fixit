@@ -234,7 +234,7 @@ export default function ClientSignupForm() {
               <User className="w-8 h-8 text-orange-500" />
             </div>
             <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
-            <p className="text-zinc-400">Join FixIt as a client</p>
+            <p className="text-zinc-400">Join serviceHub as a client</p>
           </div>
 
           {/* Form */}

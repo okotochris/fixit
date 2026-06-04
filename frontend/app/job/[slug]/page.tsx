@@ -6,27 +6,27 @@ import { Metadata } from 'next'; // ✅ only once
 import AvailableJob from './availableJob';
 
 type Job = {
-  id: number,
-  client_photo: string,
-  client_fullname: string,
-  client_contact: string,
-  scheduled_date: string,
-  address: string,
-  client_slug: string,
-  job_title: string,
-  service_type: string,
-  description: string,
-  job_photos: string[],
-  slug: string,
-  status: string,
-  time: string,
-  quote_amount: string,
-  latitude: number,
-  longitude: number
+  id: number;
+  client_photo: string;
+  client_fullname: string;
+  client_contact: string;
+  scheduled_date: string;
+  address: string;
+  client_slug: string;
+  job_title: string;
+  service_type: string;
+  description: string;
+  job_photos: string[];
+  slug: string;
+  status: string;
+  time: string;
+  quote_amount: string; // kept as string (common from API)
+  latitude: number;
+  longitude: number;
   created_at:string
-  worker_id:string
-}
-
+  worker_id:string  
+  client_id:number
+};
 // 1. Notice that params is now a Promise of the type
 export async function generateMetadata({ 
   params 

@@ -32,7 +32,8 @@ type Job = {
   latitude: number;
   longitude: number;
   created_at:string
-  worker_id:string
+  worker_id:string  
+  client_id:number
 };
 type User ={
   id:string

@@ -46,7 +46,7 @@ export default function ProAccountPopup({ open, onClose }: Props) {
 
               {/* Message */}
               <p className="text-gray-600 text-sm mb-6">
-                Create a professional account to start getting jobs and grow your profile on FixIt.
+                Create a professional account to start getting jobs and grow your profile on serviceHub.
               </p>
 
               {/* CTA Button */}

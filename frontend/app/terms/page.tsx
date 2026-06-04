@@ -1,19 +1,19 @@
 export default function TermsOfService() {
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h1 className="text-3xl font-bold text-center mb-8">Terms of Service for FixIt Platform</h1>
+      <h1 className="text-3xl font-bold text-center mb-8">Terms of Service for serviceHub Platform</h1>
       <p className="text-sm text-gray-600 mb-6">Last Updated: February 21, 2026</p>
 
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">1. Introduction and Acceptance of Terms</h2>
         <p className="mb-4">
-          Welcome to FixIt, a service marketplace platform that connects clients with skilled professionals. These Terms of Service (&quot;Terms&quot;) govern your use of the FixIt platform, including our website, mobile application, and related services (collectively, the &quot;Platform&quot;).
+          Welcome to serviceHub, a service marketplace platform that connects clients with skilled professionals. These Terms of Service (&quot;Terms&quot;) govern your use of the serviceHub platform, including our website, mobile application, and related services (collectively, the &quot;Platform&quot;).
         </p>
         <p className="mb-4">
           By accessing or using the Platform, you agree to be bound by these Terms. If you do not agree to these Terms, you must not use the Platform.
         </p>
         <p>
-          FixIt reserves the right to modify these Terms at any time. Your continued use of the Platform after changes are posted constitutes acceptance of the revised Terms.
+          serviceHub reserves the right to modify these Terms at any time. Your continued use of the Platform after changes are posted constitutes acceptance of the revised Terms.
         </p>
       </section>
 
@@ -22,7 +22,7 @@ export default function TermsOfService() {
         <ul className="list-disc list-inside space-y-2">
           <li><strong>Client</strong> means an individual or entity that posts service requests on the Platform.</li>
           <li><strong>Professional</strong> means a skilled individual or entity that creates a profile on the Platform to offer services.</li>
-          <li><strong>Platform</strong> means the FixIt website, mobile application, and related services.</li>
+          <li><strong>Platform</strong> means the serviceHub website, mobile application, and related services.</li>
           <li><strong>Services</strong> means the tasks or work performed by Professionals for Clients through the Platform.</li>
           <li><strong>User</strong> means any individual who accesses or uses the Platform, including Clients and Professionals.</li>
           <li><strong>Job</strong> means a service request posted by a Client and accepted by a Professional.</li>
@@ -45,7 +45,7 @@ export default function TermsOfService() {
           To access certain features of the Platform, you must create an account by providing accurate and complete information. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account.
         </p>
         <p className="mb-4">
-          You agree to notify FixIt immediately of any unauthorized use of your account. FixIt is not liable for any loss or damage arising from your failure to protect your account information.
+          You agree to notify serviceHub immediately of any unauthorized use of your account. serviceHub is not liable for any loss or damage arising from your failure to protect your account information.
         </p>
         <p>
           Users must provide accurate information about themselves and their services. Misrepresentation may result in account suspension or termination.
@@ -66,7 +66,7 @@ export default function TermsOfService() {
           <li>Attempting to hack or disrupt the Platform</li>
         </ul>
         <p>
-          FixIt reserves the right to remove content and suspend or terminate accounts that violate these rules.
+          serviceHub reserves the right to remove content and suspend or terminate accounts that violate these rules.
         </p>
       </section>
 
@@ -76,17 +76,17 @@ export default function TermsOfService() {
           Clients may post service requests detailing the required work, location, and budget. Professionals may browse and apply for these jobs.
         </p>
         <p className="mb-4">
-          FixIt does not guarantee the quality, safety, or legality of services provided. Users are responsible for verifying the qualifications of Professionals and the details of service requests.
+          serviceHub does not guarantee the quality, safety, or legality of services provided. Users are responsible for verifying the qualifications of Professionals and the details of service requests.
         </p>
         <p>
-          All agreements for services are between Clients and Professionals. FixIt facilitates communication but is not a party to these agreements.
+          All agreements for services are between Clients and Professionals. serviceHub facilitates communication but is not a party to these agreements.
         </p>
       </section>
 
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">7. Payments, Fees, and Commission Structure</h2>
         <p className="mb-4">
-          Payments for services are processed through third-party payment providers. FixIt may charge fees or commissions for facilitating transactions.
+          Payments for services are processed through third-party payment providers. serviceHub may charge fees or commissions for facilitating transactions.
         </p>
         <p className="mb-4">
           The commission structure will be clearly displayed on the Platform. Fees are deducted from the Professional&apos;s payment or added to the Client&apos;s total, as applicable.
@@ -105,7 +105,7 @@ export default function TermsOfService() {
           Refunds, if applicable, will be processed according to the payment provider&apos;s policies and any specific terms agreed upon for the job.
         </p>
         <p>
-          FixIt reserves the right to mediate disputes and determine refund eligibility on a case-by-case basis.
+          serviceHub reserves the right to mediate disputes and determine refund eligibility on a case-by-case basis.
         </p>
       </section>
 
@@ -115,7 +115,7 @@ export default function TermsOfService() {
           After job completion, Clients and Professionals may leave ratings and reviews. Reviews must be honest, relevant, and free from offensive language.
         </p>
         <p className="mb-4">
-          FixIt reserves the right to remove reviews that violate our policies. Ratings contribute to user profiles and help maintain platform quality.
+          serviceHub reserves the right to remove reviews that violate our policies. Ratings contribute to user profiles and help maintain platform quality.
         </p>
         <p>
           Users may not manipulate ratings or reviews for personal gain.
@@ -125,7 +125,7 @@ export default function TermsOfService() {
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">10. Intellectual Property Rights</h2>
         <p className="mb-4">
-          The Platform and its content are owned by FixIt and protected by intellectual property laws. Users retain rights to their own content but grant FixIt a license to use it for platform purposes.
+          The Platform and its content are owned by serviceHub and protected by intellectual property laws. Users retain rights to their own content but grant serviceHub a license to use it for platform purposes.
         </p>
         <p>
           You may not copy, distribute, or create derivative works from the Platform without permission.
@@ -135,7 +135,7 @@ export default function TermsOfService() {
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">11. Platform Disclaimer</h2>
         <p className="mb-4">
-          FixIt is a marketplace platform that connects Clients with Professionals. FixIt does not provide services directly and is not responsible for the quality, safety, or outcome of services performed.
+          serviceHub is a marketplace platform that connects Clients with Professionals. serviceHub does not provide services directly and is not responsible for the quality, safety, or outcome of services performed.
         </p>
         <p>
           Users engage Professionals at their own risk and are encouraged to verify qualifications and obtain necessary insurance.
@@ -145,24 +145,24 @@ export default function TermsOfService() {
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">12. Limitation of Liability</h2>
         <p className="mb-4">
-          To the fullest extent permitted by law, FixIt shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Platform.
+          To the fullest extent permitted by law, serviceHub shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Platform.
         </p>
         <p>
-          FixIt&apos;s total liability shall not exceed the amount paid by you to FixIt in the 12 months preceding the claim.
+          serviceHub&apos;s total liability shall not exceed the amount paid by you to serviceHub in the 12 months preceding the claim.
         </p>
       </section>
 
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">13. Indemnification</h2>
         <p>
-          You agree to indemnify and hold FixIt harmless from any claims, damages, or expenses arising from your use of the Platform, violation of these Terms, or infringement of third-party rights.
+          You agree to indemnify and hold serviceHub harmless from any claims, damages, or expenses arising from your use of the Platform, violation of these Terms, or infringement of third-party rights.
         </p>
       </section>
 
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">14. Account Suspension and Termination</h2>
         <p className="mb-4">
-          FixIt may suspend or terminate your account for violations of these Terms or other reasons at its discretion.
+          serviceHub may suspend or terminate your account for violations of these Terms or other reasons at its discretion.
         </p>
         <p>
           Upon termination, your right to use the Platform ceases immediately, but outstanding obligations remain.
@@ -182,10 +182,10 @@ export default function TermsOfService() {
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">16. Dispute Resolution</h2>
         <p className="mb-4">
-          Disputes between Users should first be resolved directly. If unresolved, FixIt may mediate or provide dispute resolution services.
+          Disputes between Users should first be resolved directly. If unresolved, serviceHub may mediate or provide dispute resolution services.
         </p>
         <p>
-          For disputes involving FixIt, users agree to binding arbitration or court proceedings as appropriate.
+          For disputes involving serviceHub, users agree to binding arbitration or court proceedings as appropriate.
         </p>
       </section>
 
@@ -199,7 +199,7 @@ export default function TermsOfService() {
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">18. Changes to Terms</h2>
         <p className="mb-4">
-          FixIt may update these Terms from time to time. We will notify users of material changes via email or platform notifications.
+          serviceHub may update these Terms from time to time. We will notify users of material changes via email or platform notifications.
         </p>
         <p>
           Continued use of the Platform after changes constitutes acceptance of the new Terms.
@@ -212,7 +212,7 @@ export default function TermsOfService() {
           If you have questions about these Terms, please contact us at:
         </p>
         <p>
-          Email: support@fixit.com<br />
+          Email: support@servicehub.com<br />
           Address: [Insert Company Address], Nigeria<br />
           Phone: [Insert Phone Number]
         </p>

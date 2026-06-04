@@ -4,7 +4,7 @@ import ServiceList from "./service";
 const serverUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export const metadata = {
-  title: "Explore and hire Services - FixIt Platform",
+  title: "Explore and hire Services - serviceHub Platform",
   description:
     "Discover top-rated local professionals for plumbing, electrical, carpentry, and more.. near you",
 };

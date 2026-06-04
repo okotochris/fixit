@@ -36,7 +36,7 @@ function Head() {
           <div className="flex items-center text-xl md:text-2xl font-bold text-[#FF8A00] dark:text-orange-400">
           <img
             src="/fixit.png"
-            alt="FixIt"
+            alt="serviceHub"
             className="w-8 h-8 md:w-9 md:h-9"
           />
           <div className="ml-2">service<span className="text-blue-500 dark:text-blue-400">Hub</span></div>

@@ -75,7 +75,7 @@ export default async function Home() {
   const how_it_works = [
     { step: 1, title: "Search", description: "Browse through thousands of rated professionals for any service you need." },
     { step: 2, title: "Connect", description: "Chat directly with pros, discuss your project details, and get estimates." },
-    { step: 3, title: "Hire", description: "Choose the best pro for your budget and schedule securely through FixIt." },
+    { step: 3, title: "Hire", description: "Choose the best pro for your budget and schedule securely through serviceHub." },
     { step: 4, title: "Rate", description: "Mark the job complete and leave a review to help the community." }
   ]
   const pros = await getWorkers();
@@ -136,7 +136,7 @@ export default async function Home() {
       </div>
       <div className="bg-gray-100 dark:bg-gray-900/50 py-12">
         <div className="container mx-auto text-center px-4">
-          <h2 className="text-3xl font-bold mb-4 dark:text-white">Why Choose FixIt?</h2>
+          <h2 className="text-3xl font-bold mb-4 dark:text-white">Why Choose serviceHub?</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-10">
             Trusted professionals, transparent pricing, and quality service.
           </p>

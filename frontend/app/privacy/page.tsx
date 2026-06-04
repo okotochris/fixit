@@ -1,13 +1,13 @@
 export default function PrivacyPolicy() {
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h1 className="text-3xl font-bold text-center mb-8">Privacy Policy for FixIt Platform</h1>
+    <div className="max-w-4xl mx-auto p-6 shadow-lg rounded-lg">
+      <h1 className="text-3xl font-bold text-center mb-8">Privacy Policy for serviceHub Platform</h1>
       <p className="text-sm text-gray-600 mb-6">Last Updated: February 21, 2026</p>
 
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
         <p className="mb-4">
-          At FixIt, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our service marketplace platform (the Platform).
+          At serviceHub, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our service marketplace platform (the Platform).
         </p>
         <p>
           By using the Platform, you agree to the collection and use of information in accordance with this policy. If you do not agree with our policies and practices, please do not use our Platform.
@@ -166,7 +166,7 @@ export default function PrivacyPolicy() {
           If you have any questions about this Privacy Policy or our data practices, please contact us:
         </p>
         <p>
-          Email: privacy@fixit.com<br />
+          Email: privacy@servicehub.com<br />
           Address: [Insert Company Address], Nigeria<br />
           Phone: [Insert Phone Number]
         </p>

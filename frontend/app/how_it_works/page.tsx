@@ -18,7 +18,7 @@ function How_it_works() {
         <div>
             <div className='flex flex-col items-center justify-center max-w-4xl mx-auto px-4'>
                 <h1 className='text-3xl font-bold text-center mt-10'>Getting work done has never been easier</h1>
-                <p className='text-center text-gray-600 mt-4'>From quick fixes to major renovations, FixIt connects you with trusted<br/>
+                <p className='text-center text-gray-600 mt-4'>From quick fixes to major renovations, serviceHub connects you with trusted<br/>
 p                  rofessionals in your area. Simple, secure, and stress-free.</p>
 
                 <div className='bg-[#E8F3FF] h-13.25 w-92 flex  flex-row mt-10 justify-center items-center'>
@@ -75,7 +75,7 @@ p                  rofessionals in your area. Simple, secure, and stress-free.</
                     </h1>
 
                     <p className="text-gray-600 text-lg leading-relaxed">
-                        We take trust seriously. All professionals on FixIt undergo a 
+                        We take trust seriously. All professionals on serviceHub undergo a 
                         comprehensive background check and identity verification process.
                     </p>
 
@@ -131,7 +131,7 @@ p                  rofessionals in your area. Simple, secure, and stress-free.</
                     How do I pay the professional?
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                    All payments are handled securely through the FixIt platform. Funds are held in escrow and released when the job is marked complete.
+                    All payments are handled securely through the serviceHub platform. Funds are held in escrow and released when the job is marked complete.
                 </p>
                 </div>
 
@@ -151,7 +151,7 @@ p                  rofessionals in your area. Simple, secure, and stress-free.</
                     Are the professionals insured?
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                    Yes, all professionals on FixIt are required to carry valid insurance and licenses. We verify these credentials before listing any professional on our platform.
+                    Yes, all professionals on serviceHub are required to carry valid insurance and licenses. We verify these credentials before listing any professional on our platform.
                 </p>
                 </div>
             </div>
@@ -159,7 +159,7 @@ p                  rofessionals in your area. Simple, secure, and stress-free.</
             <div className="w-full h-70.25 flex flex-col items-center justify-center bg-[#1565D8] p-4 mt-10">
                 <h1 className="text-2xl md:text-3xl font-bold text-white">Ready to tackle your to-do list?</h1>
                 <p className="text-gray-200 mt-4">
-                Join thousands of homeowners who trust FixIt to get their jobs done right.
+                Join thousands of homeowners who trust serviceHub to get their jobs done right.
                 </p>
                 <button className="mt-6 bg-white hover:bg-gray-300 text-[#1565D8] font-medium py-3 px-6 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
                 Find a Professional
