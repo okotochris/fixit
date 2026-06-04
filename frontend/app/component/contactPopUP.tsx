@@ -2,11 +2,13 @@ import React from "react";
 import { Phone, MessageCircle, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { useRouter } from "next/dist/client/components/navigation";
 
 type Info = {
   slug: string;
   description: string;
   client_contact: string;
+  client_id: number;
 };
 
 type Props = {
@@ -16,10 +18,24 @@ type Props = {
 };
 
 export default function ContactPopup({ info, open, onClose }: Props) {
+  const router = useRouter();
   const chatUrl = `/request_service/inbox/message`;
   const phoneNumber = info.client_contact;
+  const userData = localStorage.getItem("user");
+  if(!userData){
+    localStorage.setItem("redirectAfterLogin", chatUrl);
+    router.push("/login");
+    return null; // Prevent rendering the component until the user is redirected
 
-  const message = `Hi, I am from serviceHub can we do business: ${info.description}`;
+  }
+  const user = JSON.parse(userData);
+  let message = "";
+  if(user.id === info.client_id){
+     message = `Hi, I am interested in your service. I got your details from serviceHub. you can view my job details here: ${window.location.origin}/job/${info.slug} also let me know if you are interested in this job.`;
+  }else{
+   message = `Hi I saw the job you posted on serviceHub and I am interested in it. you can view the job details here: ${window.location.origin}/job/${info.slug} I want to know if the job is still available.`;
+  }
+   
 
   const whatsappUrl = `https://wa.me/${phoneNumber.replace(
     /\D/g,

@@ -11,7 +11,6 @@ router.post(
   isAuthenticated,
   upload.array('job_photos'), // handle multiple images
   async (req, res) => {
-    console.log('visited')
     try {
       // Destructure text fields
       const {
@@ -85,11 +84,22 @@ router.post(
 
       // Update job with slug
       await db.query('UPDATE jobs SET slug=$1 WHERE id=$2', [slug, jobId]);
+      const job = await db.query(`
+        SELECT 
+            jobs.*,
+            users.fullname AS client_fullname,
+            users.slug AS client_slug,
+            users.phone AS client_contact,
+            users.profilePhoto as client_photo
+            FROM jobs
+            JOIN users ON jobs.client_id = users.id
+            WHERE jobs.slug = $1
+            `, [slug]);
 
       // Return the created job
       res.status(200).json({
         message: 'Job request received successfully',
-        job: { slug, service_type, job_title, description, scheduled_date, address, time, job_photos: uploadedImages }
+        job: job.rows[0]
       });
 
     } catch (err) {
@@ -102,7 +112,6 @@ router.post(
 //GET JOB BASE ON SLUG
 router.get('/job_request', async(req, res)=>{
     const slug = req.query.slug;
-    console.log('fetching job with slug:', slug)
     try {
       const result = await db.query(`
         SELECT 
@@ -263,7 +272,6 @@ router.get('/job_info', async(req, res)=>{
     if (result.rows.length < 1) {
       return res.status(404).json({ message: "Job not found" });
     }
-    console.log('job info fetched:', result.rows[0])
     res.status(200).json(result.rows[0]);
   } catch (error) {
     console.error(error);

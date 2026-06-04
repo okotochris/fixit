@@ -52,7 +52,7 @@ router.post('/signup', upload.single('profilePhoto'), async (req, res)=>{
     <div style="font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 40px 20px;">
       <div style="max-width: 500px; margin: auto; background: #ffffff; padding: 30px; border-radius: 10px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
         
-        <h1 style="color: #1a73e8; margin-bottom: 5px;">FixIt</h1>
+        <h1 style="color: #1a73e8; margin-bottom: 5px;">serviceHub</h1>
         <p style="color: #999; font-size: 13px; margin-top: 0;">
           Trusted service marketplace
         </p>
@@ -61,7 +61,7 @@ router.post('/signup', upload.single('profilePhoto'), async (req, res)=>{
         
         <p style="color: #666; font-size: 15px;">
           Hello,<br/><br/>
-          Use the verification code below to complete your registration on <strong>FixIt</strong>.
+          Use the verification code below to complete your registration on <strong>serviceHub</strong>.
         </p>
 
         <div style="margin: 25px 0;">
@@ -84,7 +84,7 @@ router.post('/signup', upload.single('profilePhoto'), async (req, res)=>{
         </p>
 
         <p style="color: #aaa; font-size: 12px; margin-top: 30px;">
-          © ${new Date().getFullYear()} FixIt. All rights reserved.
+          © ${new Date().getFullYear()} serviceHub. All rights reserved.
         </p>
 
       </div>

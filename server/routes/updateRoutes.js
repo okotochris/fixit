@@ -201,7 +201,6 @@ router.delete('/delete_image', async(req, res)=>{
 router.post('/update-services', async (req, res)=>{
     const id = req.query.id
     const {services} = req.body;
-    console.log(services)
     try {
         await db.query(`UPDATE users SET services = array_append(services, $1) WHERE id = $2`, [services, id]);
         res.status(200).json({message: 'Services updated successfully'});
@@ -215,7 +214,6 @@ router.post('/update-services', async (req, res)=>{
 router.delete('/delete_service', async(req, res)=>{
   const id = req.query.id;
   const service = req.body.service
-  console.log(id, service)
   try {
     const ressult = await db.query(
   'UPDATE users SET services = array_remove(services, $1) WHERE id = $2 RETURNING *',
@@ -238,7 +236,6 @@ router.patch('/update-location', async (req, res)=>{
     res.status(401).json({message:"accuracy too low"})
     return;
   }
-  console.log("vistied", req.body)
   try {
     await db.query(`UPDATE users SET latitude = $1, longitude = $2 WHERE id = $3`, [lat, lng, id]);
     res.status(200).json({message: 'Location updated successfully'});
@@ -265,8 +262,6 @@ router.patch("/user/phone", async (req, res) => {
 //update account to worker
 router.patch('/upgrade-to-professional', async (req, res) => {
   const { id, skill, location, phone } = req.body;
-
-  console.log(id, skill, location, phone);
 
   try {
     const userResult = await db.query(
@@ -306,7 +301,6 @@ router.patch('/upgrade-to-professional', async (req, res) => {
 
 router.patch("/update-phone", async (req, res) => {
   const { id, phone } = req.body;
-  console.log(req.body)
 
   if (!id || !phone) {
     return res.status(400).json({

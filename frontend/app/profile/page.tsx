@@ -43,7 +43,6 @@ type Job = {
 
 export default function Profile() {
   const router = useRouter();
-   const pathname = usePathname();
   const [user, setUser] = useState<User | null>()
   const [isEditingAbout, setIsEditingAbout] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -449,7 +448,7 @@ export default function Profile() {
         </section>
 
         {/* Services - Professionals only */}
-        {user?.role !== 'client' && (
+        {user?.role == 'worker' && (
           <section>
             <h2 className="text-2xl md:text-3xl font-bold mb-5 dark:text-white">Services Offered</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -710,7 +709,7 @@ export default function Profile() {
               </p>
             </div>
 
-            {/* UDATE USER ABOUT ME  */}
+            {/* UPDATE USER ABOUT ME  */}
             <div className="px-6 py-5 bg-gray-50 dark:bg-gray-900/70 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-4">
               <button
                 onClick={() => setIsEditingAbout(false)}
@@ -730,15 +729,17 @@ export default function Profile() {
 
         </div>
       )}
+
+      {/* UPDATE SERVICES MODAL */}
       {
         isEditing ?
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-            <div className="relative w-full max-w-lg bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+            <div className="relative w-full max-w-lg h-90 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
               {/* Header */}
               <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
                 <h3 className="text-xl font-semibold dark:text-white">Add a service</h3>
                 <button
-                  onClick={() => setIsEditingAbout(false)}
+                  onClick={() => setIsEditing(false)}
                   className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none"
                 >
                   <X size={24} />
@@ -746,22 +747,22 @@ export default function Profile() {
               </div>
 
               {/* Body */}
-              <div className="px-6 py-6">
+              <div className="px-4 py-6 ">
                 <textarea
-                  className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 resize-none min-h-[160px] bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
-                  rows={7}
+                  className="w-full h-25 p-4 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 resize-none min-h-20 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                  rows={2}
                   placeholder="Add a service to your profile, this will help your account to get more lead on a search..."
                   value={services}
                   onChange={(e) => setServices(e.target.value)}
-                  maxLength={200}
+                  maxLength={40}
                 />
                 <p className="mt-3 text-sm text-gray-500 dark:text-gray-400 text-right">
-                  {200 - about.length} characters remaining
+                  {40 - services.length} characters remaining
                 </p>
               </div>
 
-              {/* UDATE USER ABOUT ME  */}
-              <div className="px-6 py-5 bg-gray-50 dark:bg-gray-900/70 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-4">
+              {/* UPDATE USER ABOUT ME  */}
+              <div className="px-4 py-5 bg-gray-50 dark:bg-gray-900/70 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-4">
                 <button
                   onClick={() => setIsEditing(false)}
                   className="px-6 py-2.5 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"
@@ -771,7 +772,7 @@ export default function Profile() {
                 <button
                   onClick={handleServiceUpload}
                   disabled={isLoading}
-                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 text-white rounded-lg font-medium transition shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 text-white rounded-lg font-medium transition shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {isLoading ? "Saving..." : "Save Changes"}
                 </button>

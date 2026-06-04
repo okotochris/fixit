@@ -10,7 +10,7 @@ import { ImageViewer } from '@/app/component/imageViewer';
 import ProAccountPopup from '@/app/job/[slug]/proAccountPopup';
 import ContactPopup from '@/app/component/contactPopUP';
 import { formatDate } from '@/app/component/formatDate';
-import path from 'path';
+
 
 
 type Job = {

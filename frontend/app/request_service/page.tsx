@@ -8,6 +8,7 @@ import { ExternalLink } from "lucide-react";
 import getLocation from "../component/getUserLocation";
 import FancyLoader from "../component/loading";
 import ContactPopup from "../component/addContact";
+import ContactUser from '@/app/component/contactPopUP';
 
 const serverUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -33,6 +34,27 @@ type RequestData = {
   address: string;
   time: string;
 };
+type Job = {
+  id: number;
+  client_photo: string;
+  client_fullname: string;
+  client_contact: string;
+  scheduled_date: string;
+  address: string;
+  client_slug: string;
+  job_title: string;
+  service_type: string;
+  description: string;
+  job_photos: string[];
+  slug: string;
+  status: string;
+  time: string;
+  quote_amount: string; // kept as string (common from API)
+  latitude: number;
+  longitude: number;
+  created_at:string
+  worker_id:string
+};
 function Request_service() {
    const router = useRouter();
    const [isSelected, setIsSelected] = useState<"asap" | "thisWeek" | "scheduleDate">("asap");
@@ -41,6 +63,9 @@ function Request_service() {
   const [userId, setUserId] = useState("")
   const [loading, setLoading] = useState(false)
   const [showPopup, setShowPopup] = useState(false);
+  const [job, setJob] = useState<Job | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  
   const [reqData, setReqData] = useState<RequestData>({
   client_id: userId? userId : '',
   worker_id: worker?.id ? worker?.id: "",
@@ -191,7 +216,10 @@ async function handleRequest(e: React.FormEvent) {
     }
 
     const result = await response.json();
-    console.log("Success:", result);
+    const {job} = result;
+    setJob(job)
+    setIsOpen(true);
+    // Optionally, you can redirect or show a success message here
 
   } catch (err) {
     console.error("Error submitting request:", err);
@@ -474,7 +502,7 @@ async function handleRequest(e: React.FormEvent) {
       </div>
        {loading && <FancyLoader fullScreen message="Requesting service..." />}
        <ContactPopup isOpen={showPopup} onSave={()=>{setShowPopup(false)}}/>
-      
+      {isOpen && job && <ContactUser info={job} onClose={()=>router.push('/service')} open={isOpen} />}
       <Footer />
     </div>
   );
