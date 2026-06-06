@@ -3,7 +3,11 @@
 import { useRouter } from "next/navigation";
 import ProCard from "./ProCard";
 import useLocationSync from "./utility/useLocationSync";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { getDistance } from "./utility/getDistance";
+import getGeoFromIP from "./utility/getGeoFromIP";
+import getLocation from "./getUserLocation";
+
 
 
 // Better name: singular type for one item
@@ -30,7 +34,36 @@ interface ProsListProps {
 }
 function ProsList({ pros }: ProsListProps) {
   const router = useRouter();
+  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
 
+ useEffect(() => {
+  async function fetchLocation() {
+    try {
+      const storedLocation = localStorage.getItem("location");
+
+      if (storedLocation) {
+        setLocation(JSON.parse(storedLocation));
+        return;
+      }
+
+      const loc = await getLocation();
+
+      if (loc) {
+        localStorage.setItem("location", JSON.stringify(loc));
+
+        setLocation({
+          lat: loc.lat,
+          lng: loc.lng,
+        });
+      }
+    } catch (err) {
+      console.log("Failed to get user location:", err);
+    }
+  }
+
+  fetchLocation();
+}, []);
+  
   function requestService(data: Professional) {
 
     localStorage.setItem("worker", JSON.stringify(data));
@@ -62,18 +95,35 @@ function ProsList({ pros }: ProsListProps) {
 
   // 🔥 CLEAN: runs once automatically
   useLocationSync(updateDBLocation);
-  const sortedPros = [...pros].sort((a, b) => {
-  // 1. rating (highest first)
-  const ratingDiff = (b.rating || 0) - (a.rating || 0);
-  if (ratingDiff !== 0) return ratingDiff;
 
-  // 2. reviews (more reviews wins)
-  const reviewDiff = (b.reviews || 0) - (a.reviews || 0);
-  if (reviewDiff !== 0) return reviewDiff;
+  //sort data
+const sortedPros = [...pros]
+  .map((pro) => ({
+    ...pro,
+     distance: getDistance(
+      location?.lat || 0,
+      location?.lng || 0,
+      pro.latitude,
+      pro.longitude
+    ),
+  }))
+  .sort((a, b) => {
+    // 1. distance (MOST IMPORTANT)
+    const distanceDiff = a.distance - b.distance;
+    if (distanceDiff !== 0) return distanceDiff;
 
-  // 3. fallback (stable sort by name)
-  return a.fullname.localeCompare(b.fullname);
-});
+    // 2. rating
+    const ratingDiff = (b.rating || 0) - (a.rating || 0);
+    if (ratingDiff !== 0) return ratingDiff;
+
+    // 3. reviews
+    const reviewDiff = (b.reviews || 0) - (a.reviews || 0);
+    if (reviewDiff !== 0) return reviewDiff;
+
+    // 4. stable fallback
+    return a.fullname.localeCompare(b.fullname);
+  });
+  
   return (
     <div className="container mx-auto py-12 text-center px-4">
       <h2 className="text-3xl font-bold mb-4 dark:text-white">

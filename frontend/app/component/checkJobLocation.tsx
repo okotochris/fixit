@@ -58,5 +58,5 @@ export default async function getDistanceFromUser(
 
   const distance = R * c;
 
-  return Number(distance.toFixed(2)); // precise km
+  return Number(distance.toFixed(0)); // precise km
 }
