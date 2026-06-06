@@ -29,7 +29,7 @@ type Services  = {
   services:string[]
 };
 
-async function getWorkers(): Promise<Worker[]> {
+async function getWorkers(): Promise<Services[]> {
   const headersList = await headers();
 
   const ipRaw =
