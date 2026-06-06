@@ -17,7 +17,7 @@ export default function useLocationSync(
 
       const { accuracy } = newLoc;
 
-      if (accuracy > 200) {
+      if (accuracy > 100) {
         console.log("wrong accuracy");
         return;
       }

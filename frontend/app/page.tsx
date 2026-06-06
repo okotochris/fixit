@@ -133,6 +133,7 @@ export default async function Home() {
           </div>
         </div>
       </main>
+      {/* // CLLING Display professionals WITH LOCOATION  Jobs*/}
     <Jobs pros = {pros}/>
       <div className="bg-[#E8F3FF] dark:bg-gray-900/70 py-12">
         <div className="container mx-auto text-center px-4">

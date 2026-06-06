@@ -44,9 +44,10 @@ function ProsList({ pros }: ProsListProps) {
   }
 
  const updateDBLocation = useCallback(async (newLoc: { lat: number; lng: number }) => {
+ 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   if (!user.id) return;
-
+  console.log('user location updated:', newLoc);
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/update-location`,
     {
