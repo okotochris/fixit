@@ -2,9 +2,9 @@ const express = require('express');
 const db = require('../database/db.js');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const sendEmail = require('../service/brevo');
-const cloudinary = require('../service/cloudinary');
-const generateSlug = require('../helper/generateSlug');
+const sendEmail = require('../service/brevo.js');
+const cloudinary = require('../service/cloudinary.js');
+const generateSlug = require('../helper/generateSlug.js');
 const upload = require('../middleware/multer.js')
 const jwt = require('jsonwebtoken');
 const router = express.Router();
@@ -239,4 +239,68 @@ router.get('/skills', async (req, res)=>{
     console.log(error)
   }
 })
+
+//CHECK IF USER EMAIL EXIST 
+router.get('/check_user_email', async (req, res)=>{
+    const {email} = req.query;
+    try {
+        const result = await db.query('SELECT email FROM users WHERE email=$1',[email])
+        if(result.rows.length === 0){
+            return res.status(404).json(false)
+        }
+        const otp = generateCode();
+        const text = `
+        <div style="font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 40px 20px;">
+          <div style="max-width: 500px; margin: auto; background: #ffffff; padding: 30px; border-radius: 10px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+            <h2 style="color: #333; font-size: 24px; margin-bottom: 20px;">Password Reset Request</h2>
+            <p style="color: #666; font-size: 16px; line-height: 1.5;">
+              You have requested to reset your password. Please use the following verification code:
+            </p>
+            <h3 style="color: #007bff; font-size: 32px; margin: 20px 0;">
+              ${otp}
+            </h3>
+            <p style="color: #666; font-size: 14px; line-height: 1.5;">
+              This code will expire in 1 hour.
+            </p>
+          </div>
+        </div>
+      `;
+        sendEmail(email, text);
+        await db.query('INSERT INTO pending_users (email, code) VALUES ($1, $2)', [email, otp]);
+        return res.status(200).json(true)
+    } catch (error) {
+        res.status(500).json({message:"Server error"})
+        console.log(error)
+    }
+})
+
+//RESET PASSWORD
+router.post('/reset-password', async (req, res)=>{
+    const { email, otp, password} = req.body;
+
+    try {
+        const result = await db.query('SELECT * FROM pending_users WHERE email = $1 AND code = $2', [email, otp]);
+
+        if (result.rows.length === 0) {
+            return res.status(400).json({ message: 'Invalid or expired verification code' });
+        }
+
+        // Update the user's password
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await db.query('UPDATE users SET password = $1 WHERE email = $2', [hashedPassword, email]);
+
+        // Remove the verification code
+        const userInfo = await db.query('DELETE FROM pending_users WHERE email = $1 AND code = $2 RETURNING *', [email, otp]);
+        
+        //USER INFO WITHOUT PASSWORD
+        const user = userInfo.rows[0];
+        delete user.password;
+        console.log(user)
+        res.status(200).json({ message: 'Password reset successfully', user });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 module.exports = router;

@@ -1,7 +1,7 @@
 'use client';
 import { Edit, ImagePlus, Share2, Trash2Icon, TrashIcon, ViewIcon, X } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Loading from '../component/loading';
 import Head from '../component/head';
 import { useImageViewer } from '../component/useImageView'
@@ -53,7 +53,7 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false)
   const [services, setServices] = useState("")
   const [isOpen, setIsOpen] = useState(false)
-  const { image, openImage, closeImage } = useImageViewer();
+  const {image, openImage, closeImage } = useImageViewer();
   const [currentImage, setCurrentImage] = useState<string>('')
   const [openShare, setOpenShare] = useState(false)
   const [recentJob, setRecentJob] = useState<Job[] | null>(null)
@@ -264,6 +264,7 @@ export default function Profile() {
             ? `url("${user.coverphoto}")`
             : 'url("/coverphoto.png")',
         }}
+        onClick={ ()=>user?.profilephoto ? openImage(user.coverphoto): ""}
       >
         <div className="w-2.5 absolute inset-0 bg-linear-to-b from-transparent via-transparent to-gray-50/80 dark:to-gray-950/80" />
         <button
@@ -315,6 +316,8 @@ export default function Profile() {
                   src={user?.profilephoto || "/avatar.webp"}
                   alt="Profile"
                   className="w-full h-full object-cover"
+                  onClick={()=>user.profilephoto ? openImage(user.profilephoto)  : ''}
+
                 />
               </div>
               {/* Hidden file input - you can add upload logic later */}
@@ -442,7 +445,7 @@ export default function Profile() {
               className="flex items-center gap-2 px-5 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg transition border border-gray-200 dark:border-gray-700"
             >
               <Edit size={18} />
-              Add / Edit About Section
+              Add About Section
             </button>
           )}
         </section>
@@ -453,14 +456,16 @@ export default function Profile() {
             <h2 className="text-2xl md:text-3xl font-bold mb-5 dark:text-white">Services Offered</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {user?.services ? user.services.map((service, i) => (
-                <div
+               <div
                   key={i}
-                  className="relative bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700 text-center font-medium text-gray-800 dark:text-gray-200 hover:border-blue-400 dark:hover:border-blue-500 transition-colors shadow-sm"
+                  className="group relative bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700 text-center font-medium text-gray-800 dark:text-gray-200 hover:border-blue-400 dark:hover:border-blue-500 transition-colors shadow-sm"
                 >
                   {service}
+
                   <Trash2Icon
-                    onClick={() => deleteItem(service, 'delete_service')}
-                    className='absolute -top-2.5 -right-0.5 hover:text-red-500' />
+                    onClick={() => deleteItem(service, "delete_service")}
+                    className="absolute -top-2.5 -right-0.5 opacity-0 group-hover:opacity-100 hover:text-red-500 transition-opacity duration-200"
+                  />
                 </div>
               )) : "No services added"
               }
@@ -573,7 +578,7 @@ export default function Profile() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                       </svg>
 
-                      Add Photo
+                      Add Work sample Photo
                     </label>
                 }
               </button>

@@ -15,15 +15,7 @@ export default function RecoverPassword() {
       setLoading(true);
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/forgot-password`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email }),
-        }
-      );
+        `${process.env.NEXT_PUBLIC_API_URL}/api/check_user_email?email=${email}`,);
 
       const data = await res.json();
 

@@ -1,11 +1,12 @@
 export const dynamic = "force-dynamic";
 import Head from './component/head'
 import { Metadata } from 'next'
-import { Search } from 'lucide-react'
 import Footer from './component/footer'
 import Jobs from './component/jobs'
 import Link from 'next/link';
 import Hero from './component/hero';
+import getGeoFromIP from './component/utility/getGeoFromIP'
+import { headers } from "next/headers";
 const serverUrl = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 
@@ -30,14 +31,43 @@ type Worker={
   services:string[]
   skills:string
 }
+
+
 async function getWorkers(): Promise<Worker[]> {
+  const headersList = await headers();
+
+  const ipRaw =
+    headersList.get("x-forwarded-for") ||
+    headersList.get("cf-connecting-ip") ||
+    "127.0.0.1";
+
+  const ip = ipRaw.split(",")[0].trim();
+
+  const geo = await getGeoFromIP(ip);
+
+  console.log("User IP:", ip, "Geo:", geo);
+
   let page = 1;
-  const limit = 10;
+  const limit = 20;
 
   try {
-    const response = await fetch(`${serverUrl}/api/get-workers?page=${page}&limit=${limit}`, {
-      cache: "no-store",
-    });
+    const response = await fetch(
+      `${serverUrl}/api/get-workers?page=${page}&limit=${limit}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          location: {
+            lat: geo.latitude,
+            lng: geo.longitude,
+          },
+          radius: 20,
+        }),
+        cache: "no-store",
+      }
+    );
 
     if (!response.ok) {
       console.log("Failed to fetch workers:", response.status);
@@ -45,15 +75,8 @@ async function getWorkers(): Promise<Worker[]> {
     }
 
     const data = await response.json();
-    page = data.page;
-
-    // if API returns { workers: [...] }
-    if (data.workers) {
-      return data.workers;
-    }
-
-    // if API returns array directly
-    return data;
+    page = data.nextPage || page++
+    return data.workers || data;
   } catch (error) {
     console.log("Server error:", error);
     return [];
@@ -75,7 +98,7 @@ export default async function Home() {
   const how_it_works = [
     { step: 1, title: "Search", description: "Browse through thousands of rated professionals for any service you need." },
     { step: 2, title: "Connect", description: "Chat directly with pros, discuss your project details, and get estimates." },
-    { step: 3, title: "Hire", description: "Choose the best pro for your budget and schedule securely through serviceHub." },
+    { step: 3, title: "Hire", description: "Choose the best pro for your budget and schedule securely through FixIt." },
     { step: 4, title: "Rate", description: "Mark the job complete and leave a review to help the community." }
   ]
   const pros = await getWorkers();
@@ -136,7 +159,7 @@ export default async function Home() {
       </div>
       <div className="bg-gray-100 dark:bg-gray-900/50 py-12">
         <div className="container mx-auto text-center px-4">
-          <h2 className="text-3xl font-bold mb-4 dark:text-white">Why Choose serviceHub?</h2>
+          <h2 className="text-3xl font-bold mb-4 dark:text-white">Why Choose FixIt?</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-10">
             Trusted professionals, transparent pricing, and quality service.
           </p>

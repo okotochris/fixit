@@ -90,6 +90,7 @@ return (
           backgroundPosition: 'center',
           backgroundSize: 'cover'
         }}
+        onClick={ ()=>user?.profilephoto ? openImage(user.coverphoto): ""}
       />
 
       {/* Profile Info Card */}

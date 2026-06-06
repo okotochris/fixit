@@ -6,8 +6,8 @@ const socketSetup = require('./socket/socket.js')
 const db = require('./database/db.js')
 const createUsersDatabase = require('./database/user.js');
 const cors = require('cors');
-const login = require('./routes/login.js');
-pendingUsers = require('./database/isPending.js');
+const athenticatRoute = require('./routes/authenticatRoute.js');
+const pendingUsers = require('./database/isPending.js');
 const updateRoutes = require('./routes/updateRoutes.js');
 const skill = require('./database/skill.js')
 const createJobTable = require('./database/job.js')
@@ -63,7 +63,7 @@ const PORT = process.env.PORT || 8080;
 socketSetup(io);
 
 
-app.use('/api', login);
+app.use('/api', athenticatRoute);
 app.use('/api', updateRoutes);
 app.use('/api', profileRoute)
 app.use('/api', serviceRoute)
