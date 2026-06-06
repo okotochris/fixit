@@ -1,6 +1,8 @@
+import { headers } from "next/dist/server/request/headers";
 import Footer from "../component/footer";
 import Head from "../component/head";
 import ServiceList from "./service";
+import getGeoFromIP from "../component/utility/getGeoFromIP";
 const serverUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export const metadata = {
@@ -27,9 +29,41 @@ type Services  = {
   services:string[]
 };
 
-async function getWorkers(): Promise<Services[]> {
+async function getWorkers(): Promise<Worker[]> {
+  const headersList = await headers();
+
+  const ipRaw =
+    headersList.get("x-forwarded-for") ||
+    headersList.get("cf-connecting-ip") ||
+    "127.0.0.1";
+
+  const ip = ipRaw.split(",")[0].trim();
+
+  const geo = await getGeoFromIP(ip);
+
+  console.log("User IP:", ip, "Geo:", geo);
+
+  let page = 1;
+  const limit = 20;
+
   try {
-    const response = await fetch(`${serverUrl}/api/get-workers`, { next: { revalidate: 60 } });
+    const response = await fetch(
+      `${serverUrl}/api/get-workers?page=${page}&limit=${limit}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          location: {
+            lat: geo.latitude,
+            lng: geo.longitude,
+          },
+          radius: 20,
+        }),
+        cache: "no-store",
+      }
+    );
 
     if (!response.ok) {
       console.log("Failed to fetch workers:", response.status);
@@ -37,14 +71,8 @@ async function getWorkers(): Promise<Services[]> {
     }
 
     const data = await response.json();
-
-    // if API returns { workers: [...] }
-    if (data.workers) {
-      return data.workers;
-    }
-
-    // if API returns array directly
-    return data;
+    page = data.nextPage || page++
+    return data.workers`` || data;
   } catch (error) {
     console.log("Server error:", error);
     return [];

@@ -5,7 +5,6 @@ import ProCard from "./ProCard";
 import useLocationSync from "./utility/useLocationSync";
 import { useCallback, useEffect, useState } from "react";
 import { getDistance } from "./utility/getDistance";
-import getGeoFromIP from "./utility/getGeoFromIP";
 import getLocation from "./getUserLocation";
 
 

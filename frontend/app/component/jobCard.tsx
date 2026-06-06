@@ -3,6 +3,8 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
 import getDistanceFromUser from './checkJobLocation';
 import { formatDate } from './formatDate';
+import getLocation from './getUserLocation';
+import { getDistance } from './utility/getDistance';
 
 interface Job {
   id: number;
@@ -22,14 +24,41 @@ interface Job {
 }
 
 function JobCard({job, i}:{job:Job, i:number}) {
-    const [location, setLocation] = useState(0)
-    useEffect(()=>{
-       async function  getLocation(){
-           const distance = await  getDistanceFromUser(job.latitude, job.longitude)
-           setLocation(distance)
+    const [location, setLocation] = useState<number | null>(null);
+useEffect(() => {
+  async function fetchLocation() {
+    try {
+      const storedLocation = localStorage.getItem("location");
+
+      let loc;
+
+      if (storedLocation) {
+        loc = JSON.parse(storedLocation);
+      } else {
+        loc = await getLocation();
+
+        if (loc) {
+          localStorage.setItem("location", JSON.stringify(loc));
         }
-        getLocation()
-    }, [job.longitude, job.latitude])
+      }
+
+      if (loc) {
+        const distance = getDistance(
+          loc.lat || 0,
+          loc.lng || 0,
+          job.latitude,
+          job.longitude
+        );
+
+        setLocation(distance);
+      }
+    } catch (err) {
+      console.log("Failed to get user location:", err);
+    }
+  }
+
+  fetchLocation();
+}, [job.latitude, job.longitude]);
         return (
              <Link
                 key={i}
