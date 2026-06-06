@@ -1,31 +1,20 @@
-async function getGeoFromIP(ip: string) {
+export default async function getGeoFromIP(ip: string) {
   try {
-    // 1. Try ipapi
-    const res = await fetch(`https://ipapi.co/${ip}/json/`);
+    const res = await fetch(`https://ipwho.is/${ip}`);
     const data = await res.json();
 
-    if (!data.latitude) throw new Error("ipapi failed");
+    if (!data.success) throw new Error("Geo failed");
 
-    return data;
-  } catch (e) {
-    try {
-      // 2. fallback ipinfo
-      const res = await fetch(`https://ipinfo.io/${ip}/json?token=YOUR_TOKEN`);
-      const data = await res.json();
+    return {
+      latitude: data.latitude,
+      longitude: data.longitude,
+    };
+  } catch (err) {
+    console.log("Geo lookup failed:", err);
 
-      const [lat, lng] = data.loc.split(",");
-
-      return {
-        latitude: lat,
-        longitude: lng,
-      };
-    } catch (e2) {
-      // 3. final fallback (no geo)
-      return {
-        latitude: null,
-        longitude: null,
-      };
-    }
+    return {
+      latitude: null,
+      longitude: null,
+    };
   }
 }
-export default getGeoFromIP;

@@ -62,7 +62,18 @@ function ProsList({ pros }: ProsListProps) {
 
   // 🔥 CLEAN: runs once automatically
   useLocationSync(updateDBLocation);
+  const sortedPros = [...pros].sort((a, b) => {
+  // 1. rating (highest first)
+  const ratingDiff = (b.rating || 0) - (a.rating || 0);
+  if (ratingDiff !== 0) return ratingDiff;
 
+  // 2. reviews (more reviews wins)
+  const reviewDiff = (b.reviews || 0) - (a.reviews || 0);
+  if (reviewDiff !== 0) return reviewDiff;
+
+  // 3. fallback (stable sort by name)
+  return a.fullname.localeCompare(b.fullname);
+});
   return (
     <div className="container mx-auto py-12 text-center px-4">
       <h2 className="text-3xl font-bold mb-4 dark:text-white">
@@ -72,7 +83,7 @@ function ProsList({ pros }: ProsListProps) {
         See the best professionals in your area based on ratings and reviews.
       </p>
 
-      {pros.length === 0 ? (
+      {sortedPros.length === 0 ? (
         <div className="py-16 text-center">
           <p className="text-lg text-gray-500 dark:text-gray-400">
             No professionals found in your area at the moment.
@@ -83,7 +94,7 @@ function ProsList({ pros }: ProsListProps) {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-7">
-        {pros.map((pro) => (
+        {sortedPros.map((pro) => (
           <ProCard
             key={pro.slug}
             pro={pro}
