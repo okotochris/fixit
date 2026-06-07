@@ -1,7 +1,9 @@
 'use client'
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import ProCard from "../component/ProCard";
+import getLocation from "../component/getUserLocation";
+import { getDistance } from "../component/utility/getDistance";
 
 
 type Services = {
@@ -24,7 +26,64 @@ function ServiceList({ displayedPros }: { displayedPros: Services[] }) {
   const router = useRouter()
   const [searchTerm, setSearchTerm] = useState("")
   const [sortOption, setSortOption] = useState("best-match")
+  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
 
+   useEffect(() => {
+    async function fetchLocation() {
+      try {
+        const storedLocation = localStorage.getItem("location");
+
+        if (storedLocation) {
+          setLocation(JSON.parse(storedLocation));
+          return;
+        }
+
+        const loc = await getLocation();
+
+        if (loc) {
+          localStorage.setItem("location", JSON.stringify(loc));
+
+          setLocation({
+            lat: loc.lat,
+            lng: loc.lng,
+          });
+        }
+      } catch (err) {
+        console.log("Failed to get user location:", err);
+      }
+    }
+
+  fetchLocation();
+}, []);
+
+  //sort data
+const sortedPros = [...displayedPros]
+  .map((pro) => ({
+    ...pro,
+     distance: getDistance(
+      location?.lat || 0,
+      location?.lng || 0,
+      pro.latitude,
+      pro.longitude
+    ),
+  }))
+  .sort((a, b) => {
+    // 1. distance (MOST IMPORTANT)
+    const distanceDiff = a.distance - b.distance;
+    if (distanceDiff !== 0) return distanceDiff;
+
+    // 2. rating
+    const ratingDiff = (b.rating || 0) - (a.rating || 0);
+    if (ratingDiff !== 0) return ratingDiff;
+
+    // 3. reviews
+    const reviewDiff = (b.reviews || 0) - (a.reviews || 0);
+    if (reviewDiff !== 0) return reviewDiff;
+
+    // 4. stable fallback
+    return a.fullname.localeCompare(b.fullname);
+  });
+  
   const filteredAndSortedPros = useMemo(() => {
     let result = [...displayedPros]
 
@@ -34,12 +93,12 @@ function ServiceList({ displayedPros }: { displayedPros: Services[] }) {
 
   result = result.filter((pro) => {
     const fullname = (pro.fullname || "").toLowerCase();
-    const profession = (pro.profession || "").toLowerCase();
+    const skills = (pro.skills || "").toLowerCase();
     const description = (pro.description || "").toLowerCase();
 
     return (
       fullname.includes(term) ||
-      profession.includes(term) ||
+      skills.includes(term) ||
       description.includes(term)
     );
   });
@@ -54,7 +113,7 @@ function ServiceList({ displayedPros }: { displayedPros: Services[] }) {
         result.sort((a, b) => b.reviews - a.reviews || b.rating - a.rating)
         break
       case "profession-az":
-        result.sort((a, b) => a.profession.localeCompare(b.profession))
+        result.sort((a, b) => a.skills.localeCompare(b.skills))
         break
       case "closest":
         result.sort((a, b) => a.latitude - b.latitude || a.longitude - b.longitude)
