@@ -85,7 +85,7 @@ const sortedPros = [...displayedPros]
   });
   
   const filteredAndSortedPros = useMemo(() => {
-    let result = [...displayedPros]
+    let result = [...sortedPros]
 
     // Search filter
    if (searchTerm.trim()) {
