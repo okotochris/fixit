@@ -72,7 +72,7 @@ async function getWorkers(): Promise<Services[]> {
 
     const data = await response.json();
     page = data.nextPage || page++
-    return data.workers`` || data;
+    return data.workers || data;
   } catch (error) {
     console.log("Server error:", error);
     return [];
@@ -81,6 +81,7 @@ async function getWorkers(): Promise<Services[]> {
 
 export default async function Service() {
   const workers = await getWorkers();
+
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">

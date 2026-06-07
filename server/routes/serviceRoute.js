@@ -5,6 +5,7 @@ const router = express.Router()
 
 router.post('/get-workers', async (req, res) => {
   const { page = 1, limit = 10, location } = req.body;
+  console.log("Received location:", location);
 
   const lat = location?.lat;
   const lng = location?.lng;
@@ -60,7 +61,6 @@ router.post('/get-workers', async (req, res) => {
     );
 
     const totalPages = Math.ceil(totalWorkers.rows[0].count / limit);
-
     res.json({
       workers: result.rows,
       totalWorkers: totalWorkers.rows[0].count,
