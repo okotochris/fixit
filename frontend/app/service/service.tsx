@@ -57,79 +57,69 @@ function ServiceList({ displayedPros }: { displayedPros: Services[] }) {
 }, []);
 
   //sort data
-const sortedPros = [...displayedPros]
-  .map((pro) => ({
-    ...pro,
-     distance: getDistance(
-      location?.lat || 0,
-      location?.lng || 0,
-      pro.latitude,
-      pro.longitude
-    ),
-  }))
-  .sort((a, b) => {
-    // 1. distance (MOST IMPORTANT)
-    const distanceDiff = a.distance - b.distance;
-    if (distanceDiff !== 0) return distanceDiff;
+const sortedPros = useMemo(() => {
+  return [...displayedPros]
+    .map((pro) => ({
+      ...pro,
+      distance: getDistance(
+        location?.lat || 0,
+        location?.lng || 0,
+        pro.latitude,
+        pro.longitude
+      ),
+    }))
+    .sort((a, b) => {
+      const distanceDiff = a.distance - b.distance;
+      if (distanceDiff) return distanceDiff;
 
-    // 2. rating
-    const ratingDiff = (b.rating || 0) - (a.rating || 0);
-    if (ratingDiff !== 0) return ratingDiff;
+      const ratingDiff = (b.rating || 0) - (a.rating || 0);
+      if (ratingDiff) return ratingDiff;
 
-    // 3. reviews
-    const reviewDiff = (b.reviews || 0) - (a.reviews || 0);
-    if (reviewDiff !== 0) return reviewDiff;
+      const reviewDiff = (b.reviews || 0) - (a.reviews || 0);
+      if (reviewDiff) return reviewDiff;
 
-    // 4. stable fallback
-    return a.fullname.localeCompare(b.fullname);
-  });
-  
-  const filteredAndSortedPros = useMemo(() => {
-    let result = [...sortedPros]
+      return (a.fullname || "").localeCompare(b.fullname || "");
+    });
+}, [displayedPros, location]);
 
-    // Search filter
-   if (searchTerm.trim()) {
-  const term = searchTerm.toLowerCase().trim();
+const filteredAndSortedPros = useMemo(() => {
+  let result = [...sortedPros];
 
-  result = result.filter((pro) => {
-    const fullname = (pro.fullname || "").toLowerCase();
-    const skills = (pro.skills || "").toLowerCase();
-    const description = (pro.description || "").toLowerCase();
+  if (searchTerm.trim()) {
+    const term = searchTerm.toLowerCase().trim();
 
-    return (
-      fullname.includes(term) ||
-      skills.includes(term) ||
-      description.includes(term)
+    result = result.filter((pro) =>
+      [pro.fullname, pro.skills, pro.description]
+        .some((value) => (value || "").toLowerCase().includes(term))
     );
-  });
-}
+  }
 
-    // Sorting
-    switch (sortOption) {
-      case "highest-rated":
-        result.sort((a, b) => b.rating - a.rating || b.reviews - a.reviews)
-        break
-      case "most-reviews":
-        result.sort((a, b) => b.reviews - a.reviews || b.rating - a.rating)
-        break
-      case "profession-az":
-        result.sort((a, b) => a.skills.localeCompare(b.skills))
-        break
-      case "closest":
-        result.sort((a, b) => a.latitude - b.latitude || a.longitude - b.longitude)
-        break
-      case "best-match":
-      default:
-        result.sort((a, b) => {
-          const scoreA = a.rating * Math.log(a.reviews + 1)
-          const scoreB = b.rating * Math.log(b.reviews + 1)
-          return scoreB - scoreA
-        })
-        break
-    }
+  switch (sortOption) {
+    case "highest-rated":
+      result.sort(
+        (a, b) =>
+          (b.rating || 0) - (a.rating || 0) ||
+          (b.reviews || 0) - (a.reviews || 0)
+      );
+      break;
 
-    return result
-  }, [displayedPros, searchTerm, sortOption])
+    case "most-reviews":
+      result.sort(
+        (a, b) =>
+          (b.reviews || 0) - (a.reviews || 0) ||
+          (b.rating || 0) - (a.rating || 0)
+      );
+      break;
+
+    case "profession-az":
+      result.sort((a, b) =>
+        (a.skills || "").localeCompare(b.skills || "")
+      );
+      break;
+  }
+
+  return result;
+}, [sortedPros, searchTerm, sortOption]);
 
   function requestService(data:Services){
     localStorage.setItem('worker', JSON.stringify(data));
@@ -180,7 +170,7 @@ const sortedPros = [...displayedPros]
         </div>
 
         {/* Sort Select */}
-        <div className="w-full sm:w-auto min-w-[200px]">
+        <div className="w-full sm:w-auto min-w-50">
           <select
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value)}
@@ -189,7 +179,6 @@ const sortedPros = [...displayedPros]
             <option value="best-match">Best Match</option>
             <option value="highest-rated">Highest Rated</option>
             <option value="most-reviews">Most Reviews</option>
-            <option value="closest">Closest First</option>
             <option value="profession-az">Profession A–Z</option>
           </select>
         </div>
