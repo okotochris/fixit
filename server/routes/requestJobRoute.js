@@ -5,7 +5,62 @@ const db = require('../database/db'); // make sure path is correct
 const isAuthenticated = require('../middleware/isAuthenticated');
 const upload = require('../middleware/multer'); // multer setup
 const cloudinary = require('../service/cloudinary'); // cloudinary config
+const sendEmail = require('../service/brevo.js');
 
+
+//SEND EMAIL TO WORKER THAT HIS SERVICE IS REQUESTED
+function sendEmailToWorker(email, workerName, clientName, jobTitle, slug) {
+ const text = `
+<div style="font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 40px 20px;">
+  <div style="max-width: 500px; margin: auto; background: #ffffff; padding: 30px; border-radius: 10px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+
+    <h1 style="color: #1a73e8; margin-bottom: 5px;">serviceHub</h1>
+    <p style="color: #999; font-size: 13px; margin-top: 0;">
+      Trusted service marketplace
+    </p>
+
+    <h2 style="color: #333; margin-top: 25px;">New Service Request</h2>
+
+    <p style="color: #666; font-size: 15px;">
+      Hello, ${workerName}!<br/><br/>
+      You have received a new service request from
+      <strong>${clientName}</strong> for
+      <strong>${jobTitle}</strong>.
+    </p>
+
+    <div style="margin: 25px 0;">
+      <a
+        href="https://servicehub.space/job/${slug}"
+        style="
+          display: inline-block;
+          background: #1a73e8;
+          color: #ffffff;
+          text-decoration: none;
+          padding: 12px 24px;
+          border-radius: 6px;
+          font-weight: bold;
+        "
+      >
+        View Job Details
+      </a>
+    </div>
+
+    <p style="color: #888; font-size: 13px;">
+      You have 24 hours to accept or reject this job request before it expires.
+    </p>
+
+    <p style="color: #aaa; font-size: 12px; margin-top: 30px;">
+      © ${new Date().getFullYear()} serviceHub. All rights reserved.
+    </p>
+
+  </div>
+</div>
+`;
+  
+    sendEmail(email, text);
+}
+
+// JOB REQUEST API
 router.post(
   '/job_request',
   isAuthenticated,
@@ -28,11 +83,12 @@ router.post(
       // Fetch client and worker full names
       const clientResult = await db.query('SELECT fullname FROM users WHERE id=$1', [client_id]);
       if (!clientResult.rows[0]) return res.status(404).json({ message: "Client not found" });
-      const workerResult = await db.query('SELECT fullname FROM users WHERE id=$1', [worker_id]);
+      const workerResult = await db.query('SELECT fullname, email FROM users WHERE id=$1', [worker_id]);
       if (!workerResult.rows[0]) return res.status(404).json({ message: "Worker not found" });
 
       const clientFullName = clientResult.rows[0].fullname;
       const workerFullName = workerResult.rows[0].fullname;
+      const workerEmail = workerResult.rows[0].email;
 
       // Upload images to Cloudinary
       let uploadedImages = [];
@@ -101,6 +157,7 @@ router.post(
         message: 'Job request received successfully',
         job: job.rows[0]
       });
+       sendEmailToWorker(workerEmail, workerFullName, clientFullName, job_title, slug)
 
     } catch (err) {
       console.error('Error processing job request:', err);

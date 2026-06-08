@@ -101,4 +101,46 @@ router.get('/workers/:category', async (req, res) => {
     });
   }
 });
+
+router.get("/professionals/sitemap", async (req, res) => {
+  try {
+    const result = await db.query(`
+      SELECT slug, updated_at
+      FROM users
+      WHERE slug IS NOT NULL AND role = 'worker'
+      ORDER BY updated_at DESC
+    `);
+
+    res.status(200).json(
+      result.rows.map((pro) => ({
+        slug: pro.slug,
+        updatedAt: pro.updated_at,
+      }))
+    );
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Failed to fetch professionals sitemap data" });
+  }
+});
+router.get("/jobs/sitemap", async (req, res) => {
+  try {
+    const result = await db.query(`
+      SELECT slug, updated_at
+      FROM jobs
+      WHERE slug IS NOT NULL
+    `);
+
+    res.status(200).json(
+      result.rows.map((job) => ({
+        slug: job.slug,
+        updatedAt: job.updated_at,
+      }))
+    );
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to fetch jobs sitemap data" });
+  }
+});
 module.exports = router;
