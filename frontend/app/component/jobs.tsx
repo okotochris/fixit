@@ -62,7 +62,7 @@ function ProsList({ pros }: ProsListProps) {
 
   fetchLocation();
 }, []);
-  
+
   function requestService(data: Professional) {
 
     localStorage.setItem("worker", JSON.stringify(data));
@@ -125,6 +125,7 @@ const sortedPros = [...pros]
   
   return (
     <div className="container mx-auto py-12 text-center px-4">
+      
       <h2 className="text-3xl font-bold mb-4 dark:text-white">
         Top Rated Pros Near You
       </h2>
