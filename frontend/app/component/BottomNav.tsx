@@ -8,7 +8,7 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   // ❌ hide on auth pages
-  const hiddenRoutes = ["/login", "/signup", "/signup/worker_signup", "/signup/client_signup", "/forgot-password"];
+  const hiddenRoutes = ["/signup", "/signup/worker_signup", "/signup/client_signup", "/forgot-password"];
 
   if (hiddenRoutes.includes(pathname)) return null;
 

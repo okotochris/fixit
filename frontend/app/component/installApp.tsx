@@ -8,27 +8,43 @@ export default function InstallPopup() {
   const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
-  async function checkPWA(){
     const ua = window.navigator.userAgent.toLowerCase();
-    setIsIOS(/iphone|ipad|ipod/.test(ua));
 
+    const ios = /iphone|ipad|ipod/.test(ua);
+    setIsIOS(ios);
+
+    // ❌ Don't show if already installed (PWA mode)
+    const isStandalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (window.navigator as any).standalone === true;
+
+    if (isStandalone) return;
+
+    // Handle install prompt (Android)
     const handler = (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      setShow(true);
+
+      // show after slight delay (better UX)
+      setTimeout(() => setShow(true), 5000);
     };
 
     window.addEventListener("beforeinstallprompt", handler);
 
-    // Show iOS fallback popup
-    if (/iphone|ipad|ipod/.test(ua)) {
-      setShow(true);
-    }
-
-    return () => window.removeEventListener("beforeinstallprompt", handler);
-  }
-  checkPWA()
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handler);
+    };
   }, []);
+
+  const installApp = async () => {
+    if (!deferredPrompt) return;
+
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+
+    setDeferredPrompt(null);
+    setShow(false);
+  };
 
   if (!show) return null;
 
@@ -59,11 +75,7 @@ export default function InstallPopup() {
           {!isIOS && deferredPrompt && (
             <button
               className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold"
-              onClick={async () => {
-                deferredPrompt.prompt();
-                await deferredPrompt.userChoice;
-                setShow(false);
-              }}
+              onClick={installApp}
             >
               Install App
             </button>

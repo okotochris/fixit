@@ -3,7 +3,7 @@ import { Search } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
-import FancyLoader from './loading'
+
 
 function Hero() {
   const [isLogin, setIsLogin] = useState(false)
