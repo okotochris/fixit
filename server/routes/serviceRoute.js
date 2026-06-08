@@ -105,16 +105,16 @@ router.get('/workers/:category', async (req, res) => {
 router.get("/professionals/sitemap", async (req, res) => {
   try {
     const result = await db.query(`
-      SELECT slug, updated_at
+      SELECT slug, created_at
       FROM users
       WHERE slug IS NOT NULL AND role = 'worker'
-      ORDER BY updated_at DESC
+      ORDER BY  created_at DESC
     `);
 
     res.status(200).json(
       result.rows.map((pro) => ({
         slug: pro.slug,
-        updatedAt: pro.updated_at,
+        updatedAt: pro. created_at,
       }))
     );
   } catch (error) {
@@ -125,9 +125,10 @@ router.get("/professionals/sitemap", async (req, res) => {
   }
 });
 router.get("/jobs/sitemap", async (req, res) => {
+  console.log("Received request for jobs sitemap");
   try {
     const result = await db.query(`
-      SELECT slug, updated_at
+      SELECT slug,  created_at
       FROM jobs
       WHERE slug IS NOT NULL
     `);
@@ -135,7 +136,7 @@ router.get("/jobs/sitemap", async (req, res) => {
     res.status(200).json(
       result.rows.map((job) => ({
         slug: job.slug,
-        updatedAt: job.updated_at,
+        updatedAt: job.created_at,
       }))
     );
   } catch (error) {
