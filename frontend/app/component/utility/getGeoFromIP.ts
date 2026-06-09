@@ -1,9 +1,22 @@
 export default async function getGeoFromIP(ip: string) {
   try {
-    const res = await fetch(`https://ipwho.is/${ip}`);
+    const controller = new AbortController();
+
+    const timeout = setTimeout(() => {
+      controller.abort();
+    }, 5000);
+
+    const res = await fetch(`https://ipwho.is/${ip}`, {
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeout);
+
     const data = await res.json();
 
-    if (!data.success) throw new Error("Geo failed");
+    if (!data.success) {
+      throw new Error("Geo lookup failed");
+    }
 
     return {
       latitude: data.latitude,
