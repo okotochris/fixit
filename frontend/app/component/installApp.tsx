@@ -6,45 +6,91 @@ export default function InstallPopup() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [show, setShow] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
+  
 
-  useEffect(() => {
-    const ua = window.navigator.userAgent.toLowerCase();
+   useEffect(() => {
+    const hasShownThisSession =
+      sessionStorage.getItem("install-popup-shown");
 
-    const ios = /iphone|ipad|ipod/.test(ua);
-    setIsIOS(ios);
+    const alreadyInstalled =
+      localStorage.getItem("pwa-installed") === "true";
 
-    // ❌ Don't show if already installed (PWA mode)
     const isStandalone =
       window.matchMedia("(display-mode: standalone)").matches ||
       (window.navigator as any).standalone === true;
 
-    if (isStandalone) return;
+    if (hasShownThisSession || alreadyInstalled || isStandalone) {
+      return;
+    }
 
-    // Handle install prompt (Android)
-    const handler = (e: any) => {
+    const ua = window.navigator.userAgent.toLowerCase();
+    const ios = /iphone|ipad|ipod/.test(ua);
+    setIsIOS(ios);
+
+    const markShown = () => {
+      sessionStorage.setItem("install-popup-shown", "true");
+    };
+
+    const showPopup = () => {
+      setTimeout(() => {
+        setShow(true);
+        markShown();
+      }, 5000);
+    };
+
+    const handleBeforeInstallPrompt = (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
 
-      // show after slight delay (better UX)
-      setTimeout(() => setShow(true), 5000);
+      showPopup();
     };
 
-    window.addEventListener("beforeinstallprompt", handler);
+    // iOS fallback
+    if (ios) {
+      showPopup();
+    }
+
+    const handleInstalled = () => {
+      localStorage.setItem("pwa-installed", "true");
+      setShow(false);
+      setDeferredPrompt(null);
+    };
+
+    const checkInstalled = () => {
+      const installed =
+        window.matchMedia("(display-mode: standalone)").matches ||
+        (window.navigator as any).standalone === true;
+
+      if (installed) {
+        localStorage.setItem("pwa-installed", "true");
+        setShow(false);
+      }
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.addEventListener("appinstalled", handleInstalled);
+    window.addEventListener("focus", checkInstalled);
 
     return () => {
-      window.removeEventListener("beforeinstallprompt", handler);
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      window.removeEventListener("appinstalled", handleInstalled);
+      window.removeEventListener("focus", checkInstalled);
     };
-  }, []);
+}, []);
 
-  const installApp = async () => {
-    if (!deferredPrompt) return;
+const installApp = async () => {
+  if (!deferredPrompt) return;
 
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
+  deferredPrompt.prompt();
 
-    setDeferredPrompt(null);
+  const result = await deferredPrompt.userChoice;
+
+  if (result.outcome === "accepted") {
     setShow(false);
-  };
+  }
+
+  setDeferredPrompt(null);
+};
 
   if (!show) return null;
 
@@ -73,17 +119,20 @@ export default function InstallPopup() {
         {/* Buttons */}
         <div className="flex gap-3">
           {!isIOS && deferredPrompt && (
-            <button
-              className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold"
-              onClick={installApp}
-            >
-              Install App
-            </button>
+           <button
+            className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold"
+            onClick={installApp}
+          >
+            Install App
+          </button>
           )}
 
           <button
             className="flex-1 bg-gray-200 dark:bg-gray-800 py-2 rounded-lg"
-            onClick={() => setShow(false)}
+            onClick={() => {
+              sessionStorage.setItem("install-popup-shown", "true");
+              setShow(false);
+            }}
           >
             Not now
           </button>
