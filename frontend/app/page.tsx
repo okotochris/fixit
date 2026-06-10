@@ -87,9 +87,9 @@ export default async function Home() {
     { item: "Plumber", icon: "/plumbing.png" },
     { item: "Electrician", icon: "/electrical.png" },
     { item: "Carpenter", icon: "/carpentry.png" },
-    { item:'Funiture', icon: "/carpentry.png" },
+    { item:'Furniture', icon: "/carpentry.png" },
     { item: "Painter", icon: "/painting.png" },
-    { item: "HVAC Technician", icon: "/hvac.png" },
+    { item: "HVAC", icon: "/hvac.png" },
     { item: "Cleaner", icon: "/cleaning.png" },
     { item: "Welder", icon: "/hvac.png" },
     { item: "Barber", icon: "/hvac.png" }
