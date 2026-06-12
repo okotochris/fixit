@@ -1,70 +1,66 @@
 import Footer from "@/app/component/footer";
 import Head from "@/app/component/head";
-import ServiceList from "@/app/service/service";
+import Worker from "./Worker";
 
-const serverUrl = process.env.NEXT_PUBLIC_API_URL;
+// Dynamic Metadata for SEO
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+  const { slug } = await params;
 
-export const metadata = {
-  title: "Explore and hire Services - ServiceHub Platform",
-  description:
-    "Discover top-rated local professionals for skilled labour like plumbing, electrical, carpentry, and more near you",
-};
+  // Format slug nicely (e.g., "plumbing-service" → "Plumbing Services")
+  const serviceName = slug
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 
-type Services = {
-  id: string;
-  fullname: string;
-  slug: string;
-  profession: string;
-  skills: string;
-  coverphoto: string;
-  profilephoto: string;
-  rating: number;
-  reviews: number;
-  description: string;
-  latitude: number;
-  longitude: number;
-  services: string[];
-};
+  return {
+    title: `Hire ${serviceName} Near You | Best Local Professional workers - ServiceHub`,
+    description: `Find and hire top-rated ${serviceName.toLowerCase()} experts in your area. Book reliable ${serviceName.toLowerCase()} & skilled workers with verified reviews and instant quotes.`,
+    
+    keywords: [
+      serviceName,
+      `${serviceName} near me`,
+      `hire ${serviceName}`,
+      `best ${serviceName} services`,
+      "local professionals",
+      "skilled labor",
+      "book service online",
+      "ServiceHub",
+    ],
 
-async function getWorkers(category: string): Promise<Services[]> {
-  try {
-    const response = await fetch(
-      `${serverUrl}/api/workers/${category}`,
-      {
-        next: { revalidate: 60 },
-      }
-    );
+    openGraph: {
+      title: `Hire Top ${serviceName} Professionals Near You`,
+      description: `Connect with experienced and highly-rated ${serviceName.toLowerCase()} service providers in your locality on ServiceHub.`,
+      images: [
+        {
+          url: "/og-image.jpg", // Recommended: Add a good OG image
+          width: 1200,
+          height: 630,
+          alt: `${serviceName} Services`,
+        },
+      ],
+      type: "website",
+      locale: "en_NG", // Change if needed
+    },
 
-    if (!response.ok) {
-      console.log("Failed to fetch workers:", response.status);
-      return [];
-    }
+    alternates: {
+      canonical: `/services/${slug}`,
+    },
 
-    const data = await response.json();
-
-    return data.workers || data;
-
-  } catch (error) {
-    console.log("Server error:", error);
-    return [];
-  }
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
 }
 
-export default async function Service({
-  params,
-}: {
-  params: { slug: string };
-}) {
-    const { slug } = await params;
-    const workers = await getWorkers(slug);
+export default async function Service({ params }: { params: { slug: string } }) {
+  const { slug } = await params;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Head />
-
       <div className="h-16" />
 
-      <ServiceList displayedPros={workers} />
+      <Worker category={slug} />
 
       <Footer />
     </div>

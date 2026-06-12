@@ -88,11 +88,22 @@ export default async function Home() {
     { item: "Electrician", icon: "/electrical.png" },
     { item: "Carpenter", icon: "/carpentry.png" },
     { item:'Furniture', icon: "/carpentry.png" },
-    { item: "Painter", icon: "/painting.png" },
+
+     { item: "Roofer", icon: "/roof.png" },
     { item: "HVAC", icon: "/hvac.png" },
     { item: "Cleaner", icon: "/cleaning.png" },
-    { item: "Welder", icon: "/hvac.png" },
-    { item: "Barber", icon: "/hvac.png" }
+    { item: "Welder", icon: "/welder.png" },
+    { item: "Barber", icon: "/barber.png" },
+    { item: "Fumigation", icon: "/fumigation.png" },
+    { item: "Hair stylist ", icon: "/hvac.png" },
+    { item: "Tailor", icon: "/tailor.png" },
+    { item: "Gardener", icon: "/gardener.png" },
+    { item: "Hair dresser", icon: "/hvac.png" },
+    { item: "Handyman", icon: "/handyman.png" },
+    { item: "Mechanic", icon: "/mechanic.png" },
+    { item: "Roofer", icon: "/roof.png" },
+       { item: "Painter", icon: "/painting.png" },
+    { item: "Metal Fabricator", icon: "/hvac.png" },
   ]
 
   const how_it_works = [
@@ -134,7 +145,7 @@ export default async function Home() {
         </div>
       </main>
       {/* // CLLING Display professionals WITH LOCOATION  Jobs*/}
-    <Jobs pros = {pros}/>
+    {/* <Jobs pros = {pros}/> */}
       <div className="bg-[#E8F3FF] dark:bg-gray-900/70 py-12">
         <div className="container mx-auto text-center px-4">
           <h2 className="text-3xl font-bold mb-4 dark:text-white">How It Works</h2>

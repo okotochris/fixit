@@ -6,11 +6,15 @@ export default function InstallPopup() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [show, setShow] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
-  
 
-   useEffect(() => {
-    const hasShownThisSession =
-      sessionStorage.getItem("install-popup-shown");
+  useEffect(() => {
+    // === CHECK IF WE SHOULD SHOW ===
+    const dismissedUntil = localStorage.getItem("install-popup-dismissed-until");
+    const now = Date.now();
+
+    if (dismissedUntil && now < parseInt(dismissedUntil)) {
+      return; // Still in cooldown period
+    }
 
     const alreadyInstalled =
       localStorage.getItem("pwa-installed") === "true";
@@ -19,7 +23,7 @@ export default function InstallPopup() {
       window.matchMedia("(display-mode: standalone)").matches ||
       (window.navigator as any).standalone === true;
 
-    if (hasShownThisSession || alreadyInstalled || isStandalone) {
+    if (alreadyInstalled || isStandalone) {
       return;
     }
 
@@ -27,21 +31,21 @@ export default function InstallPopup() {
     const ios = /iphone|ipad|ipod/.test(ua);
     setIsIOS(ios);
 
-    const markShown = () => {
-      sessionStorage.setItem("install-popup-shown", "true");
-    };
+    // === SHOW LOGIC ===
+    let hasShown = false;   // ← Prevents multiple popups
 
     const showPopup = () => {
+      if (hasShown) return;   // ← Important fix
+      hasShown = true;
+
       setTimeout(() => {
         setShow(true);
-        markShown();
       }, 5000);
     };
 
     const handleBeforeInstallPrompt = (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
-
       showPopup();
     };
 
@@ -76,36 +80,36 @@ export default function InstallPopup() {
       window.removeEventListener("appinstalled", handleInstalled);
       window.removeEventListener("focus", checkInstalled);
     };
-}, []);
+  }, []);
 
-const installApp = async () => {
-  if (!deferredPrompt) return;
+  const installApp = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const result = await deferredPrompt.userChoice;
 
-  deferredPrompt.prompt();
+    if (result.outcome === "accepted") {
+      setShow(false);
+    }
+    setDeferredPrompt(null);
+  };
 
-  const result = await deferredPrompt.userChoice;
-
-  if (result.outcome === "accepted") {
+  const handleNotNow = () => {
+    const twoDaysLater = Date.now() + 2 * 24 * 60 * 60 * 1000; // 2 days
+    localStorage.setItem("install-popup-dismissed-until", twoDaysLater.toString());
     setShow(false);
-  }
-
-  setDeferredPrompt(null);
-};
+  };
 
   if (!show) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-end justify-center z-[999]">
       <div className="bg-white dark:bg-gray-900 w-full max-w-md p-5 rounded-t-2xl animate-slideUp">
-
         {/* Header */}
         <div className="flex items-center gap-3 mb-3">
-          <img src="/fixit.png" className="w-10 h-10" />
+          <img src="/fixit.png" className="w-10 h-10" alt="ServiceHub" />
           <div>
             <h2 className="font-bold text-lg">ServiceHub</h2>
-            <p className="text-sm text-gray-500">
-              Install our app for faster access
-            </p>
+            <p className="text-sm text-gray-500">Install our app for faster access</p>
           </div>
         </div>
 
@@ -119,26 +123,22 @@ const installApp = async () => {
         {/* Buttons */}
         <div className="flex gap-3">
           {!isIOS && deferredPrompt && (
-           <button
-            className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold"
-            onClick={installApp}
-          >
-            Install App
-          </button>
+            <button
+              className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold"
+              onClick={installApp}
+            >
+              Install App
+            </button>
           )}
 
           <button
             className="flex-1 bg-gray-200 dark:bg-gray-800 py-2 rounded-lg"
-            onClick={() => {
-              sessionStorage.setItem("install-popup-shown", "true");
-              setShow(false);
-            }}
+            onClick={handleNotNow}
           >
             Not now
           </button>
         </div>
 
-        {/* iOS instruction */}
         {isIOS && (
           <p className="text-xs text-gray-500 mt-3 text-center">
             To install: tap <b>Share</b> → <b>Add to Home Screen</b>

@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
 import {  Search } from 'lucide-react';
 import Head from '../component/head';
 import Footer from '../component/footer';
 
 import JobCard from '../component/jobCard';
+import getLocation from '../component/getUserLocation';
 
 interface Job {
   id: number;
@@ -34,18 +34,39 @@ function AvailableJobs() {
 
   useEffect(() => {
     async function fetchJobs() {
+       let loc;
+
+        const savedLocation = localStorage.getItem("location");
+
+        if (savedLocation) {
+          loc = JSON.parse(savedLocation);
+        } else {
+          loc = await getLocation();
+
+          if (loc) {
+            localStorage.setItem("location", JSON.stringify(loc));
+          }
+        }
+        console.log(loc)
+        if (!loc?.lat || !loc?.lng) {
+          throw new Error("Could not retrieve your location");
+        }
       try {
         setLoading(true);
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/available_jobs`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/available_jobs`, {
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify(loc)
+        });
 
         if (!res.ok) {
           throw new Error('Failed to fetch jobs');
         }
 
-        const data: Job[] = await res.json();
+        const data = await res.json();
         
-        setJobs(data);
-        setFilteredJobs(data);        // ← Important: also update filteredJobs
+        setJobs(data.jobs);
+        setFilteredJobs(data.jobs);        // ← Important: also update filteredJobs
       } catch (err) {
         console.error("Failed to fetch jobs:", err);
         setError("Could not load available jobs. Please try again later.");
@@ -151,7 +172,7 @@ function AvailableJobs() {
             {filteredJobs.map((job, i) => (
              <JobCard 
                 key={i}
-                job={job} i={0}/>
+                job={job} />
             ))}
           </div>
         )}

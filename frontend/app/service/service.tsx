@@ -28,33 +28,7 @@ function ServiceList({ displayedPros }: { displayedPros: Services[] }) {
   const [sortOption, setSortOption] = useState("best-match")
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
 
-   useEffect(() => {
-    async function fetchLocation() {
-      try {
-        const storedLocation = localStorage.getItem("location");
 
-        if (storedLocation) {
-          setLocation(JSON.parse(storedLocation));
-          return;
-        }
-
-        const loc = await getLocation();
-
-        if (loc) {
-          localStorage.setItem("location", JSON.stringify(loc));
-
-          setLocation({
-            lat: loc.lat,
-            lng: loc.lng,
-          });
-        }
-      } catch (err) {
-        console.log("Failed to get user location:", err);
-      }
-    }
-
-  fetchLocation();
-}, []);
 
   //sort data
 const sortedPros = useMemo(() => {

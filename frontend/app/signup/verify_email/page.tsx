@@ -137,6 +137,7 @@ function Verify() {
               <span className="font-medium text-orange-600 dark:text-orange-400">
                 {email}
               </span>
+              <p>Check your spam folder if you can not find it </p>
             </p>
           </div>
 

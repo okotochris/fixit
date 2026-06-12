@@ -1,93 +1,58 @@
-import { headers } from "next/dist/server/request/headers";
 import Footer from "../component/footer";
 import Head from "../component/head";
-import ServiceList from "./service";
-import getGeoFromIP from "../component/utility/getGeoFromIP";
-const serverUrl = process.env.NEXT_PUBLIC_API_URL;
+import Workers from "./Worker";
 
+// Dynamic Metadata for Better SEO
 export const metadata = {
-  title: "Explore and hire Services - serviceHub Platform",
+  title: "Hire Local Professionals Near You | ServiceHub - Best Skilled Workers",
   description:
-    "Discover top-rated local professionals for plumbing, electrical, carpentry, and more.. near you",
-};
+    "Find and hire top-rated local professionals for plumbing, electrical, carpentry, cleaning, painting, welding & more. Book trusted skilled workers near you with verified reviews and instant quotes.",
+  
+  keywords: [
+    "hire local professionals",
+    "skilled workers near me",
+    "book plumbers near me",
+    "electricians near me",
+    "carpenters near me",
+    "home services",
+    "local handyman",
+    "ServiceHub",
+    "hire workers online",
+    "trusted service providers",
+  ],
 
-
-
-type Services  = {
-  id: string;
-  fullname: string;
-  slug: string;
-  profession: string;
-  skills: string;
-  coverphoto: string;
-  profilephoto:string
-  rating: number;
-  reviews: number;
-  description: string;
-  latitude: number;
-  longitude: number;
-  services:string[]
-};
-
-async function getWorkers(): Promise<Services[]> {
-  const headersList = await headers();
-
-  const ipRaw =
-    headersList.get("x-forwarded-for") ||
-    headersList.get("cf-connecting-ip") ||
-    "127.0.0.1";
-
-  const ip = ipRaw.split(",")[0].trim();
-
-  const geo = await getGeoFromIP(ip);
-
-  console.log("User IP:", ip, "Geo:", geo);
-
-  let page = 1;
-  const limit = 20;
-
-  try {
-    const response = await fetch(
-      `${serverUrl}/api/get-workers?page=${page}&limit=${limit}`,
+  openGraph: {
+    title: "Hire Top Local Professionals Near You - ServiceHub",
+    description:
+      "Connect with reliable and highly-rated skilled workers in your area. Fast, safe and trusted service booking platform.",
+    images: [
       {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          location: {
-            lat: geo.latitude,
-            lng: geo.longitude,
-          },
-          radius: 20,
-        }),
-        cache: "no-store",
-      }
-    );
+        url: "/og-image.jpg", // Add a good hero image here
+        width: 1200,
+        height: 630,
+        alt: "ServiceHub - Hire Local Professionals",
+      },
+    ],
+    type: "website",
+    locale: "en_NG",
+  },
 
-    if (!response.ok) {
-      console.log("Failed to fetch workers:", response.status);
-      return [];
-    }
+  alternates: {
+    canonical: "/workers",   // Change if your page URL is different
+  },
 
-    const data = await response.json();
-    page = data.nextPage || page++
-    return data.workers || data;
-  } catch (error) {
-    console.log("Server error:", error);
-    return [];
-  }
-}
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
 
 export default async function Service() {
-  const workers = await getWorkers();
-
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Head />
       <div className="h-16" />
-      <ServiceList displayedPros={workers} />
+      <Workers />
       <Footer />
     </div>
   );

@@ -243,19 +243,61 @@ router.post("/reviews", async (req, res) => {
   }
 });
 
-//JOBS VAIBLABLE API 
-router.get('/available_jobs', async (req, res)=>{
+// JOBS AVAILABLE API - Sorted by Nearest
+router.post('/available_jobs', async (req, res) => {
+
   try {
-    const jobs = await db.query('SELECT * FROM jobs WHERE status=$1 ORDER BY id DESC', ['pending'])
-    if(jobs.length < 1){
-      res.status(404).json({message:"NO jobs"})
-      return
+    const { lat, lng, limit = 20, radius = 50 } = req.body; // radius in km (optional)
+
+    if (!lat || !lng) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Latitude and Longitude are required" 
+      });
     }
-    res.status(200).json(jobs.rows)
+
+    const result = await db.query(
+      `
+      SELECT 
+        *,
+        -- Haversine Formula: Distance in kilometers
+        (6371 * acos(
+          cos(radians($1)) * cos(radians(latitude)) * 
+          cos(radians(longitude) - radians($2)) + 
+          sin(radians($1)) * sin(radians(latitude))
+        )) AS distance
+      FROM jobs
+      WHERE 
+        status = $3
+        AND latitude IS NOT NULL 
+        AND longitude IS NOT NULL
+      ORDER BY distance ASC
+      LIMIT $4;
+      `,
+      [lat, lng, 'pending', Number(limit)]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        message: "No jobs available near you" 
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      jobs: result.rows,
+      count: result.rows.length
+    });
+
   } catch (error) {
-    res.status(500).json({message:"Server Error"})
+    console.error("Available Jobs Error:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Server Error" 
+    });
   }
-})
+});
 
 // ACCEPT JOB
 router.patch('/accept_job', async (req, res) => {

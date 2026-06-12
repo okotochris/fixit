@@ -4,12 +4,11 @@ const db = require('../database/db')
 const router = express.Router()
 
 router.post('/get-workers', async (req, res) => {
-  const { page = 1, limit = 10, location } = req.body;
-  console.log("Received location:", location);
+  const { page = 1, limit = 10, latitude, longitude } = req.body;
 
-  const lat = location?.lat;
-  const lng = location?.lng;
 
+  const lat = latitude;
+  const lng = longitude;
   const startIndex = (page - 1) * limit;
 
   try {
@@ -74,34 +73,58 @@ router.post('/get-workers', async (req, res) => {
   }
 });
 
-router.get('/workers/:category', async (req, res) => {
+// Backend Route: router.post('/workers/:category/nearby', ...)
+router.post('/workers/:category/nearby', async (req, res) => {
   const { category } = req.params;
+  const { latitude, longitude, limit = 30 } = req.body;
+
+  if (!latitude || !longitude) {
+    return res.status(400).json({ message: "Latitude and longitude required" });
+  }
+
   try {
-   const result = await db.query(
-        `
-       SELECT *
-        FROM users
-        WHERE
-        skills ILIKE '%' || $1 || '%'
-        OR EXISTS (
-            SELECT 1
-            FROM unnest(services) s
+    const result = await db.query(
+      `
+      SELECT 
+        *,
+        -- Calculate distance in kilometers using Haversine formula
+        (6371 * acos(
+          cos(radians($3)) * cos(radians(latitude)) * 
+          cos(radians(longitude) - radians($4)) + 
+          sin(radians($3)) * sin(radians(latitude))
+        )) AS distance
+      FROM users
+      WHERE 
+        (
+          skills ILIKE '%' || $1 || '%'
+          OR EXISTS (
+            SELECT 1 
+            FROM unnest(services) s 
             WHERE s ILIKE '%' || $1 || '%'
-        );
-        `,
-        [category]
-        );
-    res.json(result.rows);
-  
+          )
+        )
+        AND latitude IS NOT NULL 
+        AND longitude IS NOT NULL
+      ORDER BY distance ASC
+      LIMIT $2;
+      `,
+      [category, limit, latitude, longitude]
+    );
+
+    res.json({
+      success: true,
+      workers: result.rows,
+      count: result.rows.length
+    });
 
   } catch (error) {
-    console.log(error);
+    console.error("Nearby workers error:", error);
     res.status(500).json({
+      success: false,
       message: 'Server error'
     });
   }
 });
-
 router.get("/professionals/sitemap", async (req, res) => {
   try {
     const result = await db.query(`
@@ -125,7 +148,6 @@ router.get("/professionals/sitemap", async (req, res) => {
   }
 });
 router.get("/jobs/sitemap", async (req, res) => {
-  console.log("Received request for jobs sitemap");
   try {
     const result = await db.query(`
       SELECT slug,  created_at
