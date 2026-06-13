@@ -266,15 +266,27 @@ export default function WorkerSignupForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-    if(!formData.latitude || !formData.longitude){
-      const loc =await getLocation();
-      if(!loc){
-        setMessage("Unable to retrieve your location. Please allow location access and refresh the page.")
-        setIsOpen(true)
-        return
+    if (!formData.latitude || !formData.longitude) {
+      const loc = await getLocation();
+
+      if (!loc) {
+        setMessage(
+          "We couldn't access your location. You can still create your account and update your location later."
+        );
+        setIsOpen(true);
+
+        setFormData((prev) => ({
+          ...prev,
+          latitude: 0,
+          longitude: 0,
+        }));
+      } else {
+        setFormData((prev) => ({
+          ...prev,
+          latitude: loc.lat,
+          longitude: loc.lng,
+        }));
       }
-        const { lat, lng } = loc
-      setFormData({...formData, latitude:lat, longitude:lng})
     }
     setIsLoading(true);
     const data = new FormData();
