@@ -166,4 +166,19 @@ router.get("/jobs/sitemap", async (req, res) => {
     res.status(500).json({ message: "Failed to fetch jobs sitemap data" });
   }
 });
+
+router.get(('/workers/skills/sitemap'), async(req, res)=>{
+  try{
+    const result = await db.query('SELECT * FROM skill WHERE skill IS NOT NULL')
+    res.status(200).json(result.rows.map((skill)=>({
+      skill:skill.skill.toLowerCase(),
+    
+    })))
+  
+  }
+  catch(err){
+    console.error(err)
+    res.status(500).json({message:"Failed to fetch skills"})
+  }
+})
 module.exports = router;
