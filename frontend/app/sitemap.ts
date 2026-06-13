@@ -3,16 +3,16 @@ import { MetadataRoute } from "next";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const jobs = await fetch(
-      "https://servicehub.space/api/jobs/sitemap"
+      "https://fixit-production-75f3.up.railway.app/api/jobs/sitemap"
     ).then((res) => res.json());
 
     const professionals = await fetch(
-      "https://servicehub.space/api/professionals/sitemap"
+      "https://fixit-production-75f3.up.railway.app/api/professionals/sitemap"
     ).then((res) => res.json());
 
-    const skills = await fetch("https://servicehub.space/api/workers/skills/sitemap")
+    const skills = await fetch("https://fixit-production-75f3.up.railway.app/api/workers/skills/sitemap")
     .then(result=>result.json())
-    console.log(jobs)
+ 
     return [
       {
         url: "https://servicehub.space",
