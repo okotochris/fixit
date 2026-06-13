@@ -88,8 +88,7 @@ export default async function Home() {
     { item: "Electrician", icon: "/electrical.png" },
     { item: "Carpenter", icon: "/carpentry.png" },
     { item:'Furniture', icon: "/carpentry.png" },
-
-     { item: "Roofer", icon: "/roof.png" },
+    { item: "Roofer", icon: "/roof.png" },
     { item: "HVAC", icon: "/hvac.png" },
     { item: "Cleaner", icon: "/cleaning.png" },
     { item: "Welder", icon: "/welder.png" },
@@ -101,8 +100,8 @@ export default async function Home() {
     { item: "Handyman", icon: "/handyman.png" },
     { item: "Mechanic", icon: "/mechanic.png" },
     { item: "Roofer", icon: "/roof.png" },
-       { item: "Painter", icon: "/painting.png" },
-    { item: "Metal Fabricator", icon: "/hvac.png" },
+    { item: "Painter", icon: "/painting.png" },
+    { item: "Fabricator", icon: "/hvac.png" },
   ]
 
   const how_it_works = [
