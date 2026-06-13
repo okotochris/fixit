@@ -269,9 +269,9 @@ export default function Profile() {
         <div className="w-2.5 absolute inset-0 bg-linear-to-b from-transparent via-transparent to-gray-50/80 dark:to-gray-950/80" />
         <button
           className={`
-              absolute bottom-8 right-8 z-10
+              absolute bottom-20 right-8 z-10
               flex items-center justify-center
-              w-16 h-16 rounded-2xl
+              w-10 h-10 rounded-2xl
               bg-linear-to-br from-gray-50 to-gray-100
               dark:from-gray-800 dark:to-gray-900
               text-gray-700 dark:text-gray-200
@@ -293,7 +293,7 @@ export default function Profile() {
               animate-spin
             " />
           </div> :
-            <label htmlFor='coverPhoto'><ImagePlus className="h-8 w-8 stroke-2" /></label>
+            <label htmlFor='coverPhoto'><ImagePlus className="h-6 w-6 stroke-2" /></label>
           }
           <input type="file"
             accept="image/jpeg,image/png,image/webp"
@@ -328,7 +328,7 @@ export default function Profile() {
                 htmlFor="profilePhoto"
                 className={`
                     flex items-center justify-center
-                    w-16 h-16 rounded-2xl
+                    w-10 h-10 rounded-2xl
                     bg-linear-to-br from-gray-50 to-gray-100
                     dark:from-gray-800 dark:to-gray-900
                     text-gray-700 dark:text-gray-200
@@ -352,7 +352,7 @@ export default function Profile() {
                   " />
                   </div>
                 ) : (
-                  <ImagePlus className="z-50 h-8 w-8 stroke-2" />
+                  <ImagePlus className="z-50 h-6 w-6 stroke-2" />
                 )}
 
                 {/* Hidden input – placed inside label */}

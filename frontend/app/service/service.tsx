@@ -29,7 +29,18 @@ function ServiceList({ displayedPros }: { displayedPros: Services[] }) {
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
 
 
+useEffect(()=>{
+  const loc = localStorage.getItem('location')
+  if(!loc){
+   getLocation()
+   .then(result=>{
+    setLocation(result)
+   })
+    return
+  }
 
+   setLocation(JSON.parse(loc))
+})
   //sort data
 const sortedPros = useMemo(() => {
   return [...displayedPros]
