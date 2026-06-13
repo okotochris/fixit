@@ -430,7 +430,7 @@ export default function Profile() {
                 onClick={()=>router.push('/update_location')}
                 className="flex items-center gap-2 px-5 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium rounded-lg transition">
                 <Share2 size={18} />
-                Update
+                Update Location
               </button>
                 <div className='absolute -top-16 md:top-14 right-0'>
                 {openShare && <SocialShare slug={user?.slug || ""} />}
