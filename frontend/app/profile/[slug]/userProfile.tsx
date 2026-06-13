@@ -2,7 +2,6 @@
 import { Share2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react'
-import { usePathname } from "next/navigation";
 import { useImageViewer } from '../../component/useImageView'
 import { ImageViewer } from "../../component/imageViewer";
 import getDistanceFromUser from '../../component/checkJobLocation';

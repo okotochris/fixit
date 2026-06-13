@@ -40,7 +40,7 @@ useEffect(()=>{
   }
 
    setLocation(JSON.parse(loc))
-})
+}, [])
   //sort data
 const sortedPros = useMemo(() => {
   return [...displayedPros]
