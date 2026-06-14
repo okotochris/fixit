@@ -99,9 +99,9 @@ export default async function Home() {
     { item: "Hair dresser", icon: "/hvac.png" },
     { item: "Handyman", icon: "/handyman.png" },
     { item: "Mechanic", icon: "/mechanic.png" },
-    { item: "Roofer", icon: "/roof.png" },
     { item: "Painter", icon: "/painting.png" },
-    { item: "Fabricator", icon: "/hvac.png" },
+    { item: "POP", icon: "/painting.png" },
+    { item: "Fabricator", icon: "/handyman.png" },
   ]
 
   const how_it_works = [

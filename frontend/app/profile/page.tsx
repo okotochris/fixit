@@ -1,5 +1,5 @@
 'use client';
-import { Edit, ImagePlus, Share2, Trash2Icon, TrashIcon, ViewIcon, X } from 'lucide-react';
+import { Edit, ImagePlus, Share2, RefreshCw,Trash2Icon, TrashIcon, ViewIcon, X } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Loading from '../component/loading';
@@ -15,6 +15,8 @@ type User = {
   fullname: string;
   email: string;
   profilePix?: string;
+  latitude:number
+  logitude:number
   role: string;
   location: string;
   address: string;
@@ -426,12 +428,17 @@ export default function Profile() {
                 <Share2 size={18} />
                 Share
               </button>
-              <button 
+              {
+                user?.latitude == 0 && user?.logitude == 0 ?
+                <button 
                 onClick={()=>router.push('/update_location')}
                 className="flex items-center gap-2 px-5 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium rounded-lg transition">
-                <Share2 size={18} />
+                <RefreshCw size={18} />
                 Update Location
               </button>
+              :
+              ""
+              }
                 <div className='absolute -top-16 md:top-14 right-0'>
                 {openShare && <SocialShare slug={user?.slug || ""} />}
               </div>

@@ -4,7 +4,7 @@ const db = require('../database/db')
 const router = express.Router()
 
 router.post('/get-workers', async (req, res) => {
-  const { page = 1, limit = 10, latitude, longitude } = req.body;
+  const { page = 1, limit = 50, latitude, longitude } = req.body;
 
 
   const lat = latitude;
