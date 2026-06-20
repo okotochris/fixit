@@ -103,6 +103,8 @@ export default function UpdateLocation() {
         throw new Error(data.message || "Failed to update location");
       }
       localStorage.setItem("location", JSON.stringify(location));
+      localStorage.setItem("user", JSON.stringify({...user, latitude:location.lat, logitude:location.lng}))
+      
       setMode("ready");
       setMessage("Location updated successfully.");
       setIsOpen(true);

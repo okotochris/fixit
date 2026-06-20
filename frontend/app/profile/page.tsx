@@ -60,6 +60,7 @@ export default function Profile() {
   const [openShare, setOpenShare] = useState(false)
   const [recentJob, setRecentJob] = useState<Job[] | null>(null)
   const [isRecentJob, setIsRecentJob] = useState(false)
+
   const targetRef = useRef(null)
 
   useEffect(() => {
@@ -404,12 +405,12 @@ export default function Profile() {
               }
 
               <div className="flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 text-sm text-gray-600 dark:text-gray-400">
-                <div className="flex items-center gap-1.5">
+                {/* <div className="flex items-center gap-1.5">
                   <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                   <span>{user?.address || "N/A"}</span>
-                </div>
+                </div> */}
                 <div className="flex items-center gap-1.5">
                   <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -429,7 +430,7 @@ export default function Profile() {
                 Share
               </button>
               {
-                user?.latitude == 0 && user?.logitude == 0 ?
+                user?.latitude == 0  ?
                 <button 
                 onClick={()=>router.push('/update_location')}
                 className="flex items-center gap-2 px-5 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium rounded-lg transition">
