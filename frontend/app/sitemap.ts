@@ -46,7 +46,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: "weekly" as const,
         priority: 0.7,
       })),
-     
+      ...skills.map((skill:{skill:string})=>({
+         url: `https://servicehub.space/${skill.skill}`,
+         changeFrequency: "weekly" as const,
+         priority: 0.7,
+      }))
     ];
   } catch (error) {
     console.error("Failed to generate sitemap:", error);
