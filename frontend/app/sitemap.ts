@@ -11,7 +11,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ).then((res) => res.json());
 
     const skills = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/workers/skills/sitemap`)
-    .then(result=>result.json())
+    .then(result=>result.json()).catch(err=>console.log(err))
  
     return [
       {
