@@ -167,7 +167,7 @@ router.get("/jobs/sitemap", async (req, res) => {
   }
 });
 
-router.get(('/workers/skills/sitemap'), async(req, res)=>{
+router.get('/workers/skills/sitemap', async(req, res)=>{
   try{
     const result = await db.query('SELECT * FROM skill WHERE skill IS NOT NULL')
     res.status(200).json(result.rows.map((skill)=>({
