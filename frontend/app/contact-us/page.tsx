@@ -1,5 +1,11 @@
+import React from "react";
+import Footer from "../component/footer";
+import Head from "../component/head";
+
 export default function ContactUsPage() {
   return (
+    <>
+    <Head />
     <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 px-4 py-16">
       <div className="max-w-4xl mx-auto bg-white dark:bg-gray-900 shadow-xl rounded-3xl p-8 md:p-14 border border-gray-200 dark:border-gray-800">
         <h1 className="text-4xl font-bold mb-6 text-gray-900 dark:text-white">Contact Us</h1>
@@ -43,5 +49,7 @@ export default function ContactUsPage() {
         </div>
       </div>
     </div>
+    <Footer />
+    </>
   );
 }
