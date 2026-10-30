@@ -1,5 +1,5 @@
 'use client';
-import { Edit, ImagePlus, Share2, RefreshCw,Trash2Icon, TrashIcon, ViewIcon, X } from 'lucide-react';
+import { Edit, ImagePlus, Share2, RefreshCw,Trash2Icon, TrashIcon, ViewIcon, X, Settings } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Loading from '../component/loading';
@@ -7,6 +7,7 @@ import Head from '../component/head';
 import { useImageViewer } from '../component/useImageView'
 import { ImageViewer } from "../component/imageViewer";
 import SocialShare from '../component/shareButton';
+import Link from 'next/link';
 
 
 const server = process.env.NEXT_PUBLIC_API_URL
@@ -314,6 +315,7 @@ export default function Profile() {
 
             {/* Avatar */}
             <div className="flex justify-center md:justify-start shrink-0 relative">
+              <Link href="/profile/settings"><Settings /></Link>
               <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white dark:border-gray-800 shadow-2xl bg-gray-200 dark:bg-gray-700">
                 <img
                     src={user?.profilephoto || "/avatar.webp"}

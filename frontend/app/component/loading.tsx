@@ -20,8 +20,10 @@ export default function FancyLoader({
     lg: 'w-28 h-28'
   };
 
-  const Spinner = () => {
-    return (
+ 
+
+  const content = (
+    <div className="flex flex-col items-center justify-center">
       <div className={`relative ${sizeClasses[size]}`}>
 
         {/* Ambient Glow */}
@@ -80,12 +82,6 @@ export default function FancyLoader({
         </div>
 
       </div>
-    );
-  };
-
-  const content = (
-    <div className="flex flex-col items-center justify-center">
-      <Spinner />
 
       {message && (
         <p className="mt-6 text-gray-400 text-xs tracking-[0.3em] uppercase">

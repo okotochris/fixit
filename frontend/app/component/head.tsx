@@ -10,7 +10,9 @@ function Head() {
   const [username, setUsername] = useState<string | null>(null);
   const router = useRouter();
 
-  function getUser() {
+
+  useEffect(() => {
+      async function getUser() {
     const userData = localStorage.getItem("user");
 
     if (userData) {
@@ -21,7 +23,6 @@ function Head() {
     }
   }
 
-  useEffect(() => {
     getUser();
   }, []);
 

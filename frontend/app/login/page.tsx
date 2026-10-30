@@ -19,7 +19,9 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   
   useEffect(() => {
+    
    async function checkSession(){
+  
      if (session) {
       setLoading(true);
       const email = session.user?.email;
