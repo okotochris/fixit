@@ -315,7 +315,7 @@ export default function Profile() {
 
             {/* Avatar */}
             <div className="flex justify-center md:justify-start shrink-0 relative">
-              <Link href="/profile/settings"><Settings /></Link>
+              <Link href="/profile/settings"><Settings className='hover:text-orange-400'/></Link>
               <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white dark:border-gray-800 shadow-2xl bg-gray-200 dark:bg-gray-700">
                 <img
                     src={user?.profilephoto || "/avatar.webp"}

@@ -16,7 +16,7 @@ function generateCode() {
 }
 
 router.post('/login', async (req, res)=>{
-    const {email, password} = req.body;
+    const {email} = req.body;
   try{
       const result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
     if(result.rows.length === 0){
@@ -26,12 +26,12 @@ router.post('/login', async (req, res)=>{
     if(user.password === null){
         return res.status(401).json({message: 'Please login with google or apple'});
     }
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
     if (!isPasswordValid) {
         return res.status(401).json({message: 'Invalid email or password'});
     }
     const token = jwt.sign({email}, process.env.JWT_SECRET);
-    const userDetails = {password, ...user};
+    const {password, profilephotopublicid, coverphotopublicid, ...userDetails } = user;
     res.json({token, userDetails});
   }catch(error){
     console.log(error);

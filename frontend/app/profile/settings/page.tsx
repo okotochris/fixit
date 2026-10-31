@@ -1,13 +1,13 @@
 'use client'
 
 import FancyLoader from '@/app/component/loading';
-import Loading from '@/app/service/loading';
+import MessageModal from '@/app/component/messageModal';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
 type User = {
-    address: string;
+    id:string;
     fullname: string;
     location: string;
     phone: string;
@@ -16,6 +16,7 @@ type User = {
     skills: string;
     state: string;
     country: string;
+    description:string
 }
 
 function Settings() {
@@ -24,17 +25,19 @@ function Settings() {
     const [user, setUser] = useState<User | null>(null)
     const [services, setServices] = useState<string[]>([])
     const [loading, setLoading] = useState(true)
-    const [message, setMessage] = useState<string| null>(null)
+    const [message, setMessage] = useState<string>('')
+    const [open, setOpen] = useState(false)
 
     const [form, setForm] = useState({
-        address: '',
+
         fullname: '',
         location: '',
         phone: '',
         role: '',
-        skill: '',
+        skills: '',
         state: '',
         country: '',
+        description:''
     })
 
     useEffect(() => {
@@ -53,14 +56,15 @@ function Settings() {
             setServices(parsedUser.services || [])
 
             setForm({
-                address: parsedUser.address || '',
+               
                 fullname: parsedUser.fullname || '',
                 location: parsedUser.location || '',
                 phone: parsedUser.phone || '',
                 role: parsedUser.role || '',
-                skill: parsedUser.skills || '',
+                skills: parsedUser.skills || '',
                 state: parsedUser.state || '',
                 country: parsedUser.country || '',
+                description:parsedUser.description || '',
             })
         } catch (error) {
             console.error('Error loading user:', error)
@@ -91,20 +95,26 @@ function Settings() {
     }
     async function handleSave(e:React.FormEvent){
         e.preventDefault()
+        const id =user?.id;
         try{
             setLoading(true)
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user-update`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user-update`, {
                 method:"PATCH",
                 headers:{'Content-Type':'application/json'},
-                body:JSON.stringify(user)
+                body:JSON.stringify({...form, services, id})
             })
-            if(!response){
+            if(!response.ok){
+                setOpen(true)
                 setMessage('something went wrong try again')
                 return
             }
-             localStorage.setItem('user', JSON.stringify(user))
+            const {user} = await response.json()
+            console.log(user)
+            localStorage.setItem('user', JSON.stringify(user))
         }catch(err){
-            console.log(err)
+             setOpen(true)
+             setMessage('server error')
+             console.log(err)
         }finally{
             setLoading(false)
         }
@@ -118,14 +128,14 @@ function Settings() {
 
     return (
         <div className="mx-auto max-w-4xl space-y-8 p-6">
-
+            <MessageModal message={message} isOpen={open} onClose={()=>setOpen(false)} />
             {/* PAGE HEADER */}
             <div className='flex items-center justify-between'>
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                         Account Settings
                     </h1>
-                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    <p className="w-48 md:w-full mt-1 text-sm text-gray-500 dark:text-gray-400">
                         Manage your personal information and services.
                     </p>
                 </div>
@@ -148,12 +158,10 @@ function Settings() {
                     {Object.entries({
                         fullname: 'Full Name',
                         phone: 'Phone Number',
-                        address: 'Address',
-                        location: 'Location',
+                        location: 'Address',
                         state: 'State',
                         country: 'Country',
-                        role: 'Role',
-                        skill: 'Skills'
+                        skills: 'Skills'
                     }).map(([key, label]) => (
                         <div key={key}>
                             <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -187,18 +195,17 @@ function Settings() {
                             />
                         </div>
                     ))}
-
+                   
                 </div>
-
-                <div className="mt-6 flex justify-end">
-                    <button
-                        
-                        onClick={handleSave}
-                        className="rounded-xl bg-orange-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-orange-600 active:scale-95"
-                    >
-                        Save Changes
-                    </button>
-                </div>
+                <label className="my-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    About me
+                </label>
+                <textarea 
+                    onChange={(e)=>setForm({...form, description:e.target.value})}
+                    value={form.description}
+                    rows={4}
+                    className=' w-full rounded-xl border px-4 py-3 text-sm outline-none transition bg-white text-gray-900 border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 dark:bg-gray-950 dark:text-white dark:border-gray-700 dark:focus:border-orange-500'>
+                </textarea>
             </section>
 
             {/* SERVICES */}
@@ -279,6 +286,15 @@ function Settings() {
 
                     </div>
                 )}
+                 <div className="mt-6 flex justify-end">
+                    <button
+                        
+                        onClick={handleSave}
+                        className="rounded-xl bg-orange-500 px-6 mb-5 py-3 text-sm font-semibold text-white transition hover:bg-orange-600 active:scale-95"
+                    >
+                        Save Changes
+                    </button>
+                </div>
             </section>
 
         </div>

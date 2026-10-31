@@ -168,7 +168,7 @@ return (
                 onClick={requestJob}
                 className="flex items-center gap-2 px-6 py-2.5 text-white bg-orange-600 hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-600 font-medium rounded-lg transition shadow-md"
               >
-                Request Job
+                Hire
               </button>
               {oepnShare && <div className='absolute -top-16 md:top-14 right-0'>
                 <BrandSocialShare slug={user?.slug || ""} />

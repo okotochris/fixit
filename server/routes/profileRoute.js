@@ -29,7 +29,7 @@ router.get('/get-user', async (req, res) => {
 });
 router.get('/recent-job', async(req, res)=>{
   const id = req.query.id
-  console.log(id)
+
   let result;
   try {
     result = await db.query('SELECT * FROM jobs WHERE worker_id=$1 ORDER BY id DESC LIMIT 5', [id])

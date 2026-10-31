@@ -108,7 +108,7 @@ router.post('/upload-profilephoto', upload.single('photo'), async (req, res) => 
       if (oldPublicId) {
         try {
           await cloudinary.uploader.destroy(oldPublicId);
-          console.log(`Deleted old cover photo: ${oldPublicId}`);
+
         } catch (deleteErr) {
           console.warn('Failed to delete old Cloudinary image:', deleteErr.message);
           // → usually safe to continue (don't fail the whole request)
@@ -331,6 +331,75 @@ router.patch("/update-phone", async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
+});
+
+// UPDATE USER INFORMATION
+router.patch('/user-update', async (req, res) => {
+    try {
+        const {
+            id,
+            fullname,
+            address,
+            location,
+            phone,
+            services,
+            skills,
+            state,
+            description,
+            country
+        } = req.body;
+        if (!id) {
+            return res.status(400).json({
+                message: 'User ID is required'
+            });
+        }
+
+        const result = await db.query(
+            `UPDATE users 
+             SET 
+                fullname = $1,
+                address = $2,
+                location = $3,
+                phone = $4,
+                services = $5,
+                skills = $6,
+                state = $7,
+                country = $8,
+                description = $9
+             WHERE id = $10
+             RETURNING *`,
+            [
+                fullname,
+                address,
+                location,
+                phone,
+                services,
+                skills,
+                state,
+                country,
+                description,
+                id
+            ]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({
+                message: 'User not found'
+            });
+        }
+        const {password, profilephotopublicid, coverphotopublicid, ...user } = result.rows[0];
+        res.status(200).json({
+            message: 'Profile updated successfully',
+            user
+        });
+
+    } catch (err) {
+        console.log(err);
+
+        res.status(500).json({
+            message: 'Something went wrong'
+        });
+    }
 });
 
 module.exports = router;

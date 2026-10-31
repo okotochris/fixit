@@ -26,6 +26,8 @@ function createUsersDatabase(){
             longitude  FLOAT,
             isVerified BOOLEAN DEFAULT FALSE,
             password VARCHAR(255),
+            state TEXT,
+            country TEXT,
             role VARCHAR(50) DEFAULT 'client',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )`)
