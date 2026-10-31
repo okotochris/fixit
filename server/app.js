@@ -55,8 +55,7 @@ db.connect().then(result=>{
   skill()
   createJobTable()
   createReviewTable()
-  db.query('ALTER TABLE users ADD COLUMN state TEXT').then(result=>console.log('state added'))
-  db.query('ALTER TABLE users ADD COLUMN country TEXT').then(result=>console.log('country added'))
+
 })
 .catch(error=>{
   console.log("Database connection failed", error.message)
