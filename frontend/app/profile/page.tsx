@@ -8,41 +8,9 @@ import { useImageViewer } from '../component/useImageView'
 import { ImageViewer } from "../component/imageViewer";
 import SocialShare from '../component/shareButton';
 import Link from 'next/link';
-
-
+import { Job, User } from '../component/interface';
 const server = process.env.NEXT_PUBLIC_API_URL
-type User = {
-  id: string;
-  fullname: string;
-  email: string;
-  profilePix?: string;
-  latitude:number
-  logitude:number
-  role: string;
-  location: string;
-  address: string;
-  image: string[]
-  description: string;
-  coverphoto: string;
-  profilephoto: string;
-  skills: string;
-  services: string[]
-  slug: string
-};
-type Job = {
-  id: string,
-  service_type: string
-  job_title: string,
-  description: string,
-  scheduled_date: string,
-  job_photos: string[]
-  quote_amount: string,
-  slug: string,
-  status: string
-  created_at: string,
-  quote_status: string
 
-}
 
 export default function Profile() {
   const router = useRouter();
@@ -391,21 +359,6 @@ export default function Profile() {
                   {user?.skills ? 'Professional ' + user?.skills : ""}
                 </p>
               )}
-
-              {
-                user?.role == "worker" ?
-                  <div className="flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 text-sm text-gray-700 dark:text-gray-300">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-amber-500 text-xl">★</span>
-                      <span className="font-semibold">4.8</span>
-                      {/* <span>(1 reviews)</span> */}
-                    </div>
-                    <div className="hidden md:block text-gray-400 dark:text-gray-500">•</div>
-                    <div> jobs completed</div>
-                  </div> :
-                  <p></p>
-              }
-
               <div className="flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 text-sm text-gray-600 dark:text-gray-400">
                 {/* <div className="flex items-center gap-1.5">
                   <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -417,7 +370,7 @@ export default function Profile() {
                   <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   </svg>
-                  <span>{user?.location || "N/A"}</span>
+                   <span>{user?.location ? `${user.location},` :''} {user?.state ? `${user?.state},` :''} {user?.country}</span>
                 </div>
               </div>
             </div>

@@ -2,25 +2,9 @@ import { redirect } from 'next/navigation';
 import { Metadata } from 'next';
 import Head from '@/app/component/head';
 import Userprofile from '@/app/profile/[slug]/userProfile';
+import { User } from '@/app/component/interface';
 
-type User = {
-  id: string;
-  slug: string;
-  fullname: string;
-  email: string;
-  profilePix?: string;
-  role: string;
-  location: string;
-  address: string;
-  image: string[];
-  description: string;
-  coverphoto: string;
-  profilephoto: string;
-  skills: string;
-  services: string[];
-  longitude: number;
-  latitude: number;
-};
+
 
 const serverUrl = process.env.NEXT_PUBLIC_API_URL;
 

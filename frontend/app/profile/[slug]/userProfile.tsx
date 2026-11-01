@@ -1,44 +1,13 @@
 'use client';
 import { Share2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'; 
 import React, { useEffect, useRef, useState } from 'react'
 import { useImageViewer } from '../../component/useImageView'
 import { ImageViewer } from "../../component/imageViewer";
 import getDistanceFromUser from '../../component/checkJobLocation';
 import BrandSocialShare from '../../component/shareButton';
+import { User } from '@/app/component/interface';
 
-type User = {
-  id: string;
-  fullname: string;
-  email: string;
-  profilePix?: string;
-  role: string;
-  location: string;
-  address: string;
-  image: string[]
-  description: string;
-  coverphoto: string;
-  profilephoto: string;
-  skills: string;
-  services: string[]
-  latitude:number
-  longitude:number
-  slug:string
-};
-type Job = {
-  id:string,
-  service_type:string
-  job_title:string,
-  description:string,
-  scheduled_date:string,
-  job_photos:string[]
-  quote_amount:string,
-  slug:string,
-  status:string
-  created_at:string,
-  quote_status:string
-
-}
 
 function Userprofile({ user }: { user: User }) {
  
@@ -136,21 +105,23 @@ return (
                   {/* <span>(120 reviews)</span> */}
                 </div>
                 <div className="hidden md:block text-gray-400 dark:text-gray-600">•</div>
-                {/* <div>120 jobs completed</div> */}
-              </div>
-
-              <div className="flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 text-sm text-gray-600 dark:text-gray-400">
                 <div className="flex items-center gap-1.5">
                   <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                   <span>{location}km away</span>
                 </div>
+                {/* <div>120 jobs completed</div> */}
+
+              </div>
+
+              <div className="flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 text-sm text-gray-600 dark:text-gray-400">
+                
                 <div className="flex items-center gap-1.5">
                   <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   </svg>
-                  <span>{user.location}</span>
+                  <span>{user.location ? `${user.location},` :''} {user.state ? `${user?.state},` :''} {user?.country}</span>
                 </div>
               </div>
             </div>

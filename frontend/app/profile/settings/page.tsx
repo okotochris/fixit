@@ -1,23 +1,12 @@
 'use client'
 
+import { User } from '@/app/component/interface';
 import FancyLoader from '@/app/component/loading';
 import MessageModal from '@/app/component/messageModal';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
-type User = {
-    id:string;
-    fullname: string;
-    location: string;
-    phone: string;
-    role: string;
-    services: string[];
-    skills: string;
-    state: string;
-    country: string;
-    description:string
-}
 
 function Settings() {
     const router = useRouter()

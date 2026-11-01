@@ -1,14 +1,19 @@
 'use client';
 
 import { useState } from 'react';
+import MessageModal from '../component/messageModal';
+import { useRouter } from 'next/navigation';
+
 
 export default function RecoverPassword() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-
+  const [open, setOpen] = useState(false)
+  const [message, setMessage] = useState('')
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter()
 
   async function verifyEmail() {
     try {
@@ -20,14 +25,14 @@ export default function RecoverPassword() {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.message);
+        setMessage(data.message);
         return;
       }
 
       setStep(2);
     } catch (err) {
       console.log(err);
-      alert('Something went wrong');
+      setMessage('Server error');
     } finally {
       setLoading(false);
     }
@@ -53,17 +58,19 @@ export default function RecoverPassword() {
       );
 
       const data = await res.json();
-
       if (!res.ok) {
-        alert(data.message);
+        setMessage(data.message)
+        setOpen(true)
         return;
       }
 
-      alert('Password updated successfully');
-      window.location.href = '/login';
+      setMessage('Password updated successfully');
+      setOpen(true)
+      router.push('/login') 
     } catch (err) {
       console.log(err);
-      alert('Something went wrong');
+      setMessage('Server error');
+      setOpen(true)
     } finally {
       setLoading(false);
     }
@@ -71,6 +78,7 @@ export default function RecoverPassword() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-zinc-950 px-4">
+      <MessageModal message={message} isOpen={open} onClose={()=>setOpen(false)}/>
       <div className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-3xl shadow-xl p-6">
         <h1 className="text-2xl font-bold text-center mb-6 dark:text-white">
           Recover Password

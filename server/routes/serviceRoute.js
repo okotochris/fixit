@@ -183,4 +183,38 @@ router.get('/workers/skills/sitemap', async (req, res) => {
     res.status(500).json({ message: "Failed to fetch skills" });
   }
 });
+
+router.get('/admin/supervisor/:slug', async (req, res) => {
+    try {
+        const { slug } = req.params;
+        const result = await db.query(
+            `SELECT
+                s.*,
+                u.fullname,
+                u.email,
+                u.phone,
+                u.slug as profileslug
+             FROM supervisor s
+             LEFT JOIN users u ON s.userId = u.id
+             WHERE s.useslug = $1`,
+            [slug]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                message: "Supervisor project not found"
+            });
+        }
+        return res.status(200).json({
+            project: result.rows[0]
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            message: "Server error"
+        });
+    }
+});
 module.exports = router;

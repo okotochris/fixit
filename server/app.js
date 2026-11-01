@@ -11,10 +11,12 @@ const pendingUsers = require('./database/isPending.js');
 const updateRoutes = require('./routes/updateRoutes.js');
 const skill = require('./database/skill.js')
 const createJobTable = require('./database/job.js')
+const createSupervisorDatabase = require('./database/supervisor.js')
 const createReviewTable = require('./database/review.js')
 const profileRoute = require('./routes/profileRoute.js')
 const serviceRoute = require('./routes/serviceRoute.js')
 const jobRequest = require('./routes/requestJobRoute.js')
+const contactRoute = require('./routes/contact.js')
 
 
 const app = express();
@@ -55,7 +57,7 @@ db.connect().then(result=>{
   skill()
   createJobTable()
   createReviewTable()
-
+  createSupervisorDatabase()
 })
 .catch(error=>{
   console.log("Database connection failed", error.message)
@@ -69,6 +71,7 @@ app.use('/api', updateRoutes);
 app.use('/api', profileRoute)
 app.use('/api', serviceRoute)
 app.use('/api', jobRequest)
+app.use('/api', contactRoute)
 
 //SEND EMAIL TO USER THAT HAS NOT SET LOCATION 
 const cron = require('node-cron');
@@ -77,8 +80,6 @@ const sendEmail = require('./service/brevo.js');
 // runs every day at 8am
 cron.schedule("0 9 * * 1", async () => {
   try {
-    console.log("Running daily location check job...");
-
     const result = await db.query(`
       SELECT email, id
       FROM users

@@ -10,8 +10,6 @@ const sendEmail = async (email, html) => {
             subject: 'Notification',
             html: html,
         });
-
-        console.log("Email sent:", response);
         return response;
 
     } catch (error) {
