@@ -1,34 +1,31 @@
 'use client';
 import 'react-phone-number-input/style.css';
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { User, Mail, Lock, MapPin, ChevronRight, AlertCircle, EyeOff, Eye, Upload } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from "next/link";
 import PhoneInput from 'react-phone-number-input';
+import { Country, State } from 'country-state-city';
 import getLocation from '@/app/component/getUserLocation';
 import FancyLoader from '@/app/component/loading';
 import MessageModal from '@/app/component/messageModal';
+import { WorkerFormData } from '@/app/component/interface';
 
 
 const server = process.env.NEXT_PUBLIC_API_URL;
 
-interface WorkerFormData {
-  fullName: string;
-  email: string;
-  phone: string;
-  password: string;
-  confirmPassword: string;
-  location: string;
-  skills: string;
-  hourlyRate: string;
-  profilePhoto: File | null;
-  terms: boolean;
-  role: string;
-  latitude:number;
-  longitude:number;
-}
+// The 54 African countries plus Western Sahara (ISO 3166-1 alpha-2)
+const AFRICAN_COUNTRY_CODES = new Set([
+  'DZ', 'AO', 'BJ', 'BW', 'BF', 'BI', 'CV', 'CM', 'CF', 'TD', 'KM', 'CG', 'CD',
+  'CI', 'DJ', 'EG', 'GQ', 'ER', 'SZ', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE',
+  'LS', 'LR', 'LY', 'MG', 'MW', 'ML', 'MR', 'MU', 'MA', 'MZ', 'NA', 'NE', 'NG',
+  'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD', 'TZ', 'TG', 'TN', 'UG',
+  'ZM', 'ZW', 'EH',
+]);
+
+
 type Skill = {
-  skill:string
+  skill: string
 }
 // ==================== REUSABLE COMPONENTS ====================
 
@@ -81,6 +78,55 @@ const FormInput: React.FC<{
             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
           </button>
         )}
+      </div>
+      {error && (
+        <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
+          <AlertCircle className="w-4 h-4" /> {error}
+        </p>
+      )}
+    </div>
+  );
+};
+
+// Select dropdown styled to match FormInput (used for Country / State)
+const FormSelect: React.FC<{
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  options: { value: string; label: string }[];
+  placeholder: string;
+  error?: string;
+  disabled?: boolean;
+  icon?: React.ReactNode;
+}> = ({ label, name, value, onChange, options, placeholder, error, disabled, icon }) => {
+  return (
+    <div className="space-y-2">
+      <label htmlFor={name} className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        {label}
+      </label>
+      <div className="relative">
+        {icon && <div className="absolute left-4 top-3.5 text-gray-400 dark:text-gray-500 pointer-events-none">{icon}</div>}
+        <select
+          id={name}
+          name={name}
+          value={value}
+          onChange={onChange}
+          disabled={disabled}
+          className={`w-full px-4 py-3 ${icon ? 'pl-11' : ''}
+            rounded-2xl border transition-all duration-200 bg-white dark:bg-zinc-900 text-gray-900 dark:text-white
+            ${error
+              ? 'border-red-300 dark:border-red-700 focus:border-red-500'
+              : 'border-gray-200 dark:border-zinc-700 focus:border-orange-500 dark:focus:border-orange-600 focus:ring-2 focus:ring-orange-100 dark:focus:ring-orange-900'
+            } focus:outline-none disabled:bg-gray-100 dark:disabled:bg-zinc-800 disabled:cursor-not-allowed`}
+        >
+          <option value="">{placeholder}</option>
+          {options.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
       </div>
       {error && (
         <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
@@ -179,8 +225,10 @@ export default function WorkerSignupForm() {
     profilePhoto: null,
     terms: false,
     role: "worker",
-    latitude:0,
-    longitude:0,
+    latitude: 0,
+    longitude: 0,
+    state: '',
+    country: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -190,33 +238,56 @@ export default function WorkerSignupForm() {
   const [message, setMessage] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const [skillsList, setSkillsList] = useState<Skill[]>()
- 
-  useEffect(()=>{
-    async function setLocation(){
-      const loc =await getLocation();
-      if(!loc){
-        return
-      }
-      const { lat, lng } = loc
-      setFormData({...formData, latitude:lat, longitude:lng})
-      try{
-        const result =  await fetch(`${server}/api/skills`)
-        if(!result){
-          return
-        }
-        const {data} = await result.json()
-        setSkillsList(data)
-      }catch(err){
-        console.log(err)
+
+  // ISO codes drive the dropdowns; formData stores the human-readable names
+  const [countryCode, setCountryCode] = useState('');
+  const [stateCode, setStateCode] = useState('');
+
+  const countryOptions = useMemo(
+    () =>
+      Country.getAllCountries()
+        .filter((c) => AFRICAN_COUNTRY_CODES.has(c.isoCode))
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((c) => ({ value: c.isoCode, label: c.name })),
+    []
+  );
+
+  const stateOptions = useMemo(
+    () =>
+      countryCode
+        ? State.getStatesOfCountry(countryCode).map((s) => ({ value: s.isoCode, label: s.name }))
+        : [],
+    [countryCode]
+  );
+
+  // Fetch skills (independent of geolocation)
+  useEffect(() => {
+    async function loadSkills() {
+      try {
+        const result = await fetch(`${server}/api/skills`);
+        if (!result.ok) return;
+        const { data } = await result.json();
+        setSkillsList(data);
+      } catch (err) {
+        console.log(err);
       }
     }
-    setLocation()
-  }, [])
+    loadSkills();
+  }, []);
 
-
+  // Get coordinates
+  useEffect(() => {
+    async function setLocation() {
+      const loc = await getLocation();
+      if (!loc) return;
+      const { lat, lng } = loc;
+      // functional update so we don't overwrite anything typed meanwhile
+      setFormData((prev) => ({ ...prev, latitude: lat, longitude: lng }));
+    }
+    setLocation();
+  }, []);
 
   const router = useRouter();
-  
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -234,7 +305,9 @@ export default function WorkerSignupForm() {
     else if (formData.password !== formData.confirmPassword)
       newErrors.confirmPassword = 'Passwords do not match';
 
-    if (!formData.location.trim()) newErrors.location = 'Location is required';
+    if (!formData.country) newErrors.country = 'Please select your country';
+    // Some countries have no states in the dataset, so only require it when options exist
+    if (stateOptions.length > 0 && !formData.state) newErrors.state = 'Please select your state';
     if (!formData.skills.trim()) newErrors.skills = 'Please select your skill';
     if (!formData.terms) newErrors.terms = 'You must agree to the terms';
 
@@ -249,6 +322,35 @@ export default function WorkerSignupForm() {
       [name]: type === 'checkbox' ? checked : value,
     }));
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
+  };
+
+  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const code = e.target.value;
+    const country = code ? Country.getCountryByCode(code) : undefined;
+
+    setCountryCode(code);
+    setStateCode(''); // reset state whenever the country changes
+    setFormData(prev => ({
+      ...prev,
+      country: country?.name ?? '',
+      state: '',
+      location: country?.name ?? '',
+    }));
+    setErrors(prev => ({ ...prev, country: '', state: '' }));
+  };
+
+  const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const code = e.target.value;
+    const state = code ? State.getStateByCodeAndCountry(code, countryCode) : undefined;
+
+    setStateCode(code);
+    setFormData(prev => ({
+      ...prev,
+      state: state?.name ?? '',
+      // keeps the old "location" field populated for your backend
+      location: state?.name ? `${state.name}, ${prev.country}` : prev.country,
+    }));
+    if (errors.state) setErrors(prev => ({ ...prev, state: '' }));
   };
 
   const handlePhoneChange = (value: string | undefined) => {
@@ -266,7 +368,12 @@ export default function WorkerSignupForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-    if (!formData.latitude || !formData.longitude) {
+
+    // Work on a local copy: setFormData is async, so reading formData
+    // right after calling it would still give the old values.
+    let payload = { ...formData };
+
+    if (!payload.latitude || !payload.longitude) {
       const loc = await getLocation();
 
       if (!loc) {
@@ -274,32 +381,25 @@ export default function WorkerSignupForm() {
           "We couldn't access your location. You can still create your account and update your location later."
         );
         setIsOpen(true);
-
-        setFormData((prev) => ({
-          ...prev,
-          latitude: 0,
-          longitude: 0,
-        }));
+        payload = { ...payload, latitude: 0, longitude: 0 };
       } else {
-        setFormData((prev) => ({
-          ...prev,
-          latitude: loc.lat,
-          longitude: loc.lng,
-        }));
+        payload = { ...payload, latitude: loc.lat, longitude: loc.lng };
       }
+      setFormData(payload);
     }
+
     setIsLoading(true);
     const data = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
+    Object.entries(payload).forEach(([key, value]) => {
       if (value !== null) data.append(key, value as string | Blob);
     });
 
     try {
-      const emailCheck = await fetch(`${server}/api/check_email?email=${formData.email}`);
+      const emailCheck = await fetch(`${server}/api/check_email?email=${encodeURIComponent(payload.email)}`);
       const isUsed = await emailCheck.json();
 
       if (isUsed) {
-        setMessage('Email has already been used' );
+        setMessage('Email has already been used');
         setIsOpen(true)
         setIsLoading(false)
         return;
@@ -311,7 +411,7 @@ export default function WorkerSignupForm() {
       });
 
       if (response.ok) {
-        localStorage.setItem('email', formData.email);
+        localStorage.setItem('email', payload.email);
         router.push('/signup/verify_email');
       } else {
         const errorData = await response.json();
@@ -376,13 +476,32 @@ export default function WorkerSignupForm() {
                 )}
               </div>
 
-              <FormInput
-                label="Location"
-                name="location"
-                value={formData.location}
-                onChange={handleChange}
-                error={errors.location}
-                placeholder="City and State (e.g., Lagos, Nigeria)"
+              <FormSelect
+                label="Country"
+                name="country"
+                value={countryCode}
+                onChange={handleCountryChange}
+                options={countryOptions}
+                placeholder="Select your country"
+                error={errors.country}
+                icon={<MapPin className="w-5 h-5" />}
+              />
+
+              <FormSelect
+                label="State"
+                name="state"
+                value={stateCode}
+                onChange={handleStateChange}
+                options={stateOptions}
+                placeholder={
+                  !countryCode
+                    ? 'Select a country first'
+                    : stateOptions.length === 0
+                      ? 'No states available'
+                      : 'Select your state'
+                }
+                error={errors.state}
+                disabled={!countryCode || stateOptions.length === 0}
                 icon={<MapPin className="w-5 h-5" />}
               />
 
@@ -474,6 +593,16 @@ export default function WorkerSignupForm() {
                   <Link href="/privacy" className="text-orange-600 dark:text-orange-500 hover:underline">Privacy Policy</Link>
                 </label>
               </div>
+              {errors.terms && (
+                <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1 -mt-3">
+                  <AlertCircle className="w-4 h-4" /> {errors.terms}
+                </p>
+              )}
+              {errors.submit && (
+                <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
+                  <AlertCircle className="w-4 h-4" /> {errors.submit}
+                </p>
+              )}
 
               <button
                 type="submit"

@@ -130,8 +130,3 @@ server.listen(PORT, async ()=>{
   console.log(`App listining in PORT ${PORT}`)
  
 })
-
-const numbers = [1, 2, 3, 4, 5, 6]
-
-const modNumber = numbers.filter(num=>num >4)
-console.log(modNumber)

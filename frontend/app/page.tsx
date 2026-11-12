@@ -77,7 +77,7 @@ export default async function Home() {
     { item: "Cleaner", icon: "/cleaning.png" },
     { item: "Welder", icon: "/welder.png" },
     { item: "Barber", icon: "/barber.png" },
-    { item: "Fumigation", icon: "/fumigation.png" },
+    { item: "Fumigator", icon: "/fumigation.png" },
     { item: "Hair stylist ", icon: "/hvac.png" },
     { item: "Tailor", icon: "/barber.png" },
     { item: "Hair dresser", icon: "/hvac.png" },

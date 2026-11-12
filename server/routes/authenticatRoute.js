@@ -118,7 +118,7 @@ router.post('/verify-email', async (req, res) => {
 
     // 2️⃣ Extract user info
     const { userinfo } = pendingResult.rows[0];
-    let { fullName, email, phone, terms, skills, profilePhoto, password, location, role, latitude, longitude } = userinfo;
+    let { fullName, email, phone, terms, skills, profilePhoto, password, location, role, latitude, longitude, state, country } = userinfo;
 
     // 3️⃣ Upload profile photo if exists
     if (profilePhoto) {
@@ -129,9 +129,9 @@ router.post('/verify-email', async (req, res) => {
 
     // 4️⃣ Insert into main users table
     const userResult = await db.query(
-      `INSERT INTO users (fullName, email, phone, terms, skills, profilephoto, password, profilePhotoPublicId, location, role, latitude, longitude)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *`,
-      [fullName, email, phone, terms, skills, profilePhoto, password, profilePublicId, location, role, latitude, longitude]
+      `INSERT INTO users (fullName, email, phone, terms, skills, profilephoto, password, profilePhotoPublicId, location, role, latitude, longitude, state, country)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *`,
+      [fullName, email, phone, terms, skills, profilePhoto, password, profilePublicId, location, role, latitude, longitude, state, country]
     );
 
     // 5️⃣ Generate slug and update user record

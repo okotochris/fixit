@@ -75,3 +75,20 @@ export interface SupervisorProject {
     created_at: string;
     profileslug:string
 }
+export  interface WorkerFormData {
+  fullName: string;
+  email: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+  location: string;
+  skills: string;
+  hourlyRate: string;
+  profilePhoto: File | null;
+  terms: boolean;
+  role: string;
+  latitude:number;
+  longitude:number;
+  state:string,
+  country:string
+}
